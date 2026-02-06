@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARGO IQ — Infrared Team Proposal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f0f0;--bg2:#e8e8e8;--bg3:#ddd;
+  --s1:#fff;--s2:#f7f7f7;--s3:#eee;
+  --dark:#1a1a1a;--dark2:#2a2a2a;--dark3:#333;
+  --acc:#c8102e;--acc2:#e0132f;--accDim:rgba(200,16,46,0.08);--accGlow:rgba(200,16,46,0.12);
+  --t1:#111;--t2:#555;--t3:#888;
+  --bdr:rgba(0,0,0,0.06);--bdr2:rgba(0,0,0,0.1);--bdr3:rgba(0,0,0,0.15);
+  --grn:#0a8f3c;--grn2:#0ca648;--grn3:rgba(10,143,60,0.08);
+  --r:12px;--r2:16px;--r3:20px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t1);
+  overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* === AMBIENT === */
+.stripe-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.stripe{position:absolute;background:rgba(0,0,0,0.018);transform:rotate(-55deg);transform-origin:center}
+.stripe:nth-child(1){width:300px;height:200%;top:-50%;left:10%}
+.stripe:nth-child(2){width:200px;height:200%;top:-50%;left:35%}
+.stripe:nth-child(3){width:400px;height:200%;top:-50%;left:60%}
+.stripe:nth-child(4){width:150px;height:200%;top:-50%;left:85%}
+
+/* Speed lines accent */
+.speed-line{position:fixed;height:2px;background:linear-gradient(90deg,transparent,var(--accGlow),transparent);
+  pointer-events:none;z-index:0}
+.speed-line:nth-child(1){top:20%;left:0;right:0;animation:speedFlash 8s ease-in-out infinite}
+.speed-line:nth-child(2){top:55%;left:0;right:0;animation:speedFlash 12s ease-in-out 3s infinite}
+.speed-line:nth-child(3){top:80%;left:0;right:0;animation:speedFlash 10s ease-in-out 6s infinite}
+@keyframes speedFlash{0%,100%{opacity:0}50%{opacity:1}}
+
+/* === NAV === */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:64px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(240,240,240,0.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--bdr)}
+.logo-group{display:flex;align-items:center;gap:12px}
+/* Logo: /ARGO IQ in brand style */
+.logo-mark{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:800;color:var(--dark);
+  letter-spacing:2px;display:flex;align-items:baseline}
+.logo-slash{font-weight:300;font-size:28px;color:var(--dark3);margin-right:-2px}
+.logo-iq{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:var(--dark2);
+  vertical-align:super;margin-left:1px;letter-spacing:1.5px}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{color:var(--t3);text-decoration:none;font-size:11.5px;font-weight:600;
+  letter-spacing:1px;text-transform:uppercase;transition:color .3s}
+.nav-links a:hover{color:var(--t1)}
+
+/* === GLOBAL === */
+section{position:relative;z-index:1;padding:120px 60px}
+.ctn{max-width:1080px;width:100%;margin:0 auto}
+.lbl{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:var(--acc);margin-bottom:14px}
+.ttl{font-size:clamp(32px,4.2vw,54px);font-weight:800;line-height:1.08;letter-spacing:-2px;margin-bottom:18px;color:var(--dark)}
+.desc{font-size:17px;color:var(--t2);max-width:520px;line-height:1.75;font-weight:400}
+
+/* Red top accent bar */
+.red-bar{position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--acc),var(--acc2),var(--acc));z-index:101}
+
+/* === HERO === */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:64px;position:relative;overflow:hidden}
+.hero-inner{position:relative;z-index:2}
+
+/* Large watermark logo behind hero */
+.hero-watermark{position:absolute;right:-80px;top:50%;transform:translateY(-50%);
+  font-family:'Orbitron',sans-serif;font-size:280px;font-weight:900;
+  color:rgba(0,0,0,0.03);letter-spacing:10px;white-space:nowrap;pointer-events:none;
+  line-height:1;z-index:0;user-select:none}
+
+.hero-tag{display:inline-flex;align-items:center;gap:10px;padding:8px 20px 8px 12px;
+  border-radius:4px;background:var(--accDim);border-left:3px solid var(--acc);
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;color:var(--acc);
+  margin-bottom:36px;animation:fU .6s ease both}
+
+.hero h1{font-size:clamp(44px,5.5vw,76px);font-weight:900;line-height:1;letter-spacing:-3.5px;
+  color:var(--dark);margin-bottom:24px;animation:fU .6s ease .06s both}
+.hero h1 .accent{color:var(--acc)}
+
+.hero-desc{font-size:19px;color:var(--t2);line-height:1.7;font-weight:400;max-width:520px;
+  margin-bottom:40px;animation:fU .6s ease .12s both}
+
+.hero-checks{display:flex;flex-direction:column;gap:14px;animation:fU .6s ease .18s both}
+.hero-checks li{display:flex;align-items:center;gap:12px;font-size:16px;color:var(--t2);font-weight:400;list-style:none}
+.hero-checks li svg{width:20px;height:20px;flex-shrink:0;stroke:var(--acc);fill:none;stroke-width:2.5;stroke-linecap:round}
+
+/* Hero stats bar */
+.hero-stats{display:flex;gap:0;margin-top:48px;animation:fU .6s ease .24s both;
+  background:var(--dark);border-radius:var(--r);overflow:hidden;max-width:540px}
+.h-stat{flex:1;padding:22px 24px;border-right:1px solid rgba(255,255,255,0.08);text-align:center}
+.h-stat:last-child{border:none}
+.h-stat .val{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:800;color:#fff;line-height:1.2;letter-spacing:-1px}
+.h-stat .val em{font-style:normal;color:var(--acc2)}
+.h-stat .lab{font-size:10.5px;color:rgba(255,255,255,0.5);font-weight:500;
+  text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+.scrl{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;animation:fU .8s ease .4s both}
+.scrl span{font-family:'Orbitron',sans-serif;font-size:8px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;font-weight:600}
+.scrl-arr{width:14px;height:14px;border-right:1.5px solid var(--acc);border-bottom:1.5px solid var(--acc);
+  transform:rotate(45deg);animation:sB 2.5s infinite}
+@keyframes sB{0%,100%{transform:rotate(45deg) translate(0,0);opacity:.15}50%{transform:rotate(45deg) translate(3px,3px);opacity:1}}
+@keyframes fU{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* === DIVIDER === */
+.dv{height:1px;margin:0 60px;background:var(--bdr2);position:relative;z-index:1}
+.dv::before{content:'';position:absolute;left:0;top:-1px;width:60px;height:3px;background:var(--acc)}
+
+/* === PROBLEM === */
+.prob-split{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.prob-cards{display:flex;flex-direction:column;gap:12px}
+.pcard{padding:22px 24px;border-radius:var(--r);background:var(--s1);border:1px solid var(--bdr);
+  display:flex;gap:16px;transition:all .4s cubic-bezier(.16,1,.3,1);cursor:default;position:relative;overflow:hidden}
+.pcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--acc);transition:width .3s}
+.pcard:hover{border-color:var(--bdr2);transform:translateX(6px);box-shadow:0 8px 32px rgba(0,0,0,0.06)}
+.pcard:hover::before{width:3px}
+.pcard-ic{width:38px;height:38px;border-radius:8px;flex-shrink:0;
+  background:var(--accDim);display:flex;align-items:center;justify-content:center;font-size:16px}
+.pcard h4{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:2px}
+.pcard p{font-size:13px;color:var(--t2);line-height:1.55}
+
+/* === SOLUTION === */
+.sol-sec{background:var(--dark);color:#fff;padding:120px 60px;position:relative;overflow:hidden}
+.sol-sec .lbl{color:var(--acc2)}
+.sol-sec .ttl{color:#fff}
+.sol-sec .desc{color:rgba(255,255,255,0.55)}
+
+/* Diagonal carbon fiber feel */
+.sol-bg-stripe{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.sol-bg-stripe div{position:absolute;background:rgba(255,255,255,0.015);transform:rotate(-55deg);transform-origin:center}
+.sol-bg-stripe div:nth-child(1){width:300px;height:200%;top:-50%;left:5%}
+.sol-bg-stripe div:nth-child(2){width:200px;height:200%;top:-50%;left:40%}
+.sol-bg-stripe div:nth-child(3){width:350px;height:200%;top:-50%;left:70%}
+
+.sol-head{text-align:center;margin-bottom:72px;position:relative;z-index:1}
+.sol-head .desc{margin:0 auto}
+
+.wf{margin-bottom:40px;padding:32px;border-radius:var(--r2);
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);
+  position:relative;overflow:hidden;transition:border-color .4s;z-index:1}
+.wf:hover{border-color:rgba(255,255,255,0.1)}
+.wf.primary{border-color:rgba(200,16,46,0.3);background:rgba(200,16,46,0.04)}
+.wf.primary::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;background:var(--acc)}
+
+.wf-top{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.wf-badge{padding:5px 14px;border-radius:4px;font-family:'Orbitron',sans-serif;
+  font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.wf-badge.core{background:rgba(200,16,46,0.15);color:var(--acc2);border:1px solid rgba(200,16,46,0.3)}
+.wf-badge.add{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.08)}
+.wf-top h3{font-size:20px;font-weight:700}
+
+.wf-flow{display:flex;align-items:stretch;gap:0}
+.wf-step{flex:1;padding:20px 18px;background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.05);transition:all .3s;position:relative}
+.wf-step:first-child{border-radius:var(--r) 0 0 var(--r)}
+.wf-step:last-child{border-radius:0 var(--r) var(--r) 0}
+.wf-step:hover{border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.05)}
+.wf-ic{font-size:20px;margin-bottom:8px}
+.wf-step h5{font-size:12.5px;font-weight:700;margin-bottom:4px;color:#fff}
+.wf-step p{font-size:11.5px;color:rgba(255,255,255,0.4);line-height:1.5}
+.wf-arr{display:flex;align-items:center;justify-content:center;width:28px;flex-shrink:0;z-index:3;margin:0 -4px}
+.wf-arr svg{width:16px;height:16px;color:var(--acc2);opacity:.6}
+
+/* === IMPACT === */
+.imp-row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
+.imp-card{padding:36px 24px;border-radius:var(--r2);background:var(--s1);border:1px solid var(--bdr);
+  text-align:center;transition:all .4s;position:relative;overflow:hidden}
+.imp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--acc);
+  transform:scaleX(0);transition:transform .4s;transform-origin:left}
+.imp-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.08)}
+.imp-card:hover::before{transform:scaleX(1)}
+.imp-v{font-family:'Orbitron',sans-serif;font-size:44px;font-weight:800;letter-spacing:-1px;
+  line-height:1;margin-bottom:8px;color:var(--dark)}
+.imp-l{font-size:13px;color:var(--t2);line-height:1.45}
+
+/* === PRICING === */
+.pr-sec{padding-bottom:100px}
+.pr-head{text-align:center;margin-bottom:56px}.pr-head .desc{margin:0 auto}
+.pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:880px;margin:0 auto}
+
+.pc{border-radius:var(--r2);background:var(--s1);border:1px solid var(--bdr);
+  padding:40px 34px;position:relative;transition:all .4s;overflow:hidden}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:0;background:var(--acc);transition:height .3s}
+.pc:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.08)}
+.pc:hover::before{height:3px}
+.pc.rec{border-color:var(--bdr2);box-shadow:0 8px 32px rgba(0,0,0,0.06)}
+.pc.rec::before{height:4px;background:var(--acc)}
+
+.pc-top-badge{position:absolute;top:16px;right:16px;padding:4px 12px;border-radius:4px;
+  background:var(--acc);color:#fff;font-family:'Orbitron',sans-serif;
+  font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.pc-tier{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.pc.rec .pc-tier{color:var(--acc)}
+.pc-name{font-size:22px;font-weight:700;color:var(--dark);margin-bottom:24px}
+.pc-amt{font-family:'Orbitron',sans-serif;font-size:46px;font-weight:800;letter-spacing:-2px;line-height:1;color:var(--dark)}
+.pc-per{font-family:'Inter',sans-serif;font-size:15px;color:var(--t3);font-weight:400}
+.pc-dev{font-size:13px;color:var(--t3);margin:8px 0 24px;padding-bottom:22px;border-bottom:1px solid var(--bdr)}
+
+.pc-feat{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.pc-feat li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--t2);line-height:1.4}
+.pc-feat li strong{color:var(--t1)}
+.ck{width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  background:var(--grn3);display:flex;align-items:center;justify-content:center}
+.ck svg{width:10px;height:10px;stroke:var(--grn);fill:none;stroke-width:3;stroke-linecap:round}
+
+.pc-guar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;
+  background:var(--grn3);font-size:11.5px;color:var(--grn);font-weight:600}
+.pc-guar svg{flex-shrink:0;width:14px;height:14px;stroke:var(--grn);fill:none;stroke-width:2;stroke-linecap:round}
+
+/* === TIMELINE === */
+.tl-head{text-align:center;margin-bottom:60px}.tl-head .desc{margin:0 auto}
+.tl-track{position:relative;max-width:720px;margin:0 auto}
+.tl-line{position:absolute;left:18px;top:0;bottom:0;width:2px;background:var(--bdr2);border-radius:2px}
+.tl-line::before{content:'';position:absolute;top:0;left:0;width:100%;height:50%;background:var(--acc);border-radius:2px;
+  animation:tlFill 3s ease 1s both}
+@keyframes tlFill{from{height:0}}
+.tl-item{display:flex;gap:28px;margin-bottom:28px;position:relative}
+.tl-dot{width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  background:var(--s1);border:2px solid var(--bdr2);z-index:2;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',sans-serif;font-size:12px;font-weight:800;color:var(--t3);transition:all .3s}
+.tl-item:hover .tl-dot{border-color:var(--acc);color:var(--acc);box-shadow:0 0 0 4px var(--accDim)}
+.tl-bd{padding:22px 26px;border-radius:var(--r);flex:1;background:var(--s1);border:1px solid var(--bdr);transition:all .3s}
+.tl-item:hover .tl-bd{border-color:var(--bdr2);box-shadow:0 8px 24px rgba(0,0,0,0.05)}
+.tl-wk{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--acc);margin-bottom:4px}
+.tl-bd h4{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.tl-bd p{font-size:12.5px;color:var(--t2);line-height:1.55}
+
+/* === CTA === */
+.cta-sec{text-align:center;padding:80px 60px 120px}
+.cta-box{padding:64px 48px;border-radius:var(--r2);position:relative;overflow:hidden;
+  background:var(--dark);color:#fff}
+.cta-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--acc)}
+/* Carbon stripes */
+.cta-stripes{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.cta-stripes div{position:absolute;background:rgba(255,255,255,0.012);transform:rotate(-55deg);transform-origin:center}
+.cta-stripes div:nth-child(1){width:250px;height:200%;top:-50%;left:10%}
+.cta-stripes div:nth-child(2){width:180px;height:200%;top:-50%;left:50%}
+.cta-stripes div:nth-child(3){width:300px;height:200%;top:-50%;left:75%}
+.cta-box h2{font-size:clamp(28px,3.5vw,44px);font-weight:800;letter-spacing:-1.5px;
+  margin-bottom:16px;position:relative;line-height:1.1}
+.cta-box h2 .accent{color:var(--acc2)}
+.cta-box>p{font-size:17px;color:rgba(255,255,255,0.55);max-width:460px;margin:0 auto 10px;line-height:1.7;position:relative}
+.cta-sm{font-size:12px;color:rgba(255,255,255,0.3);position:relative}
+
+/* Footer */
+footer{text-align:center;padding:32px;border-top:1px solid var(--bdr);position:relative;z-index:1}
+.ft-logo{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:800;color:var(--dark);
+  letter-spacing:3px;margin-bottom:5px;display:flex;align-items:baseline;justify-content:center}
+.ft-slash{font-weight:300;font-size:20px;color:var(--dark3);margin-right:-1px}
+.ft-iq{font-size:8px;color:var(--dark2);vertical-align:super;margin-left:1px;letter-spacing:1.5px;font-weight:700}
+footer p{font-size:11px;color:var(--t3)}
+
+/* === REVEAL === */
+.rv{opacity:0;transform:translateY(32px);transition:all .75s cubic-bezier(.16,1,.3,1)}
+.rv.vis{opacity:1;transform:translateY(0)}
+.rv.d1{transition-delay:.06s}.rv.d2{transition-delay:.12s}.rv.d3{transition-delay:.18s}.rv.d4{transition-delay:.24s}
+
+@media(max-width:960px){
+  section{padding:80px 20px}
+  .hero-grid,.prob-split{grid-template-columns:1fr;gap:40px}
+  .hero-watermark{display:none}
+  .wf-flow{flex-direction:column}
+  .wf-arr{transform:rotate(90deg);width:auto;height:20px;margin:0}
+  .wf-step,.wf-step:first-child,.wf-step:last-child{border-radius:8px}
+  .imp-row{grid-template-columns:1fr}
+  .pr-grid{grid-template-columns:1fr}
+  nav{padding:0 20px}
+  .nav-links{gap:16px}
+  .hero-stats{flex-direction:column;border-radius:var(--r)}
+  .h-stat{border-right:none;border-bottom:1px solid rgba(255,255,255,0.08);padding:16px 20px}
+  .h-stat:last-child{border:none}
+  .sol-sec{padding:80px 20px}
+  .stripe-bg{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="red-bar"></div>
+
+<div class="stripe-bg">
+  <div class="stripe"></div><div class="stripe"></div><div class="stripe"></div><div class="stripe"></div>
+</div>
+
+<nav>
+  <div class="logo-group">
+    <div class="logo-mark"><span class="logo-slash">/</span>ARGO<span class="logo-iq">IQ</span></div>
+  </div>
+  <div class="nav-links">
+    <a href="#solution">Solution</a>
+    <a href="#pricing">Investment</a>
+    <a href="#timeline">Timeline</a>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+<div class="ctn">
+  <div class="hero-inner">
+    <div class="hero-tag">Prepared for Infrared Team</div>
+    <h1>Your own inspection<br>reporting tool<span class="accent">.</span><br>Fully automated<span class="accent">.</span></h1>
+    <p class="hero-desc">We build a custom digital tool for your field technicians, automate the entire report pipeline, and turn your renewal spreadsheet into an automated engine inside HubSpot.</p>
+    <ul class="hero-checks">
+      <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg> We build and run the system</li>
+      <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg> We catch and fix edge cases</li>
+      <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg> We improve performance over time</li>
+    </ul>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="val">6–9<em>wk</em></div><div class="lab">To Deployment</div></div>
+      <div class="h-stat"><div class="val">0<em>hrs</em></div><div class="lab">Manual Transcription</div></div>
+      <div class="h-stat"><div class="val">100<em>%</em></div><div class="lab">Satisfaction Guarantee</div></div>
+    </div>
+  </div>
+  <div class="hero-watermark">/A</div>
+</div>
+<div class="scrl"><span>Scroll</span><div class="scrl-arr"></div></div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ========== PROBLEM ========== -->
+<section id="problem">
+<div class="ctn">
+  <div class="prob-split">
+    <div class="rv">
+      <div class="lbl">The Bottleneck</div>
+      <div class="ttl">Your field work is world-class. Your back office can't keep up.</div>
+      <div class="desc">Two manual workflows are bleeding time, compressing margins, and capping growth.</div>
+    </div>
+    <div class="prob-cards">
+      <div class="pcard rv d1">
+        <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg></div>
+        <div><h4>Handwritten Reports → Manual Transcription</h4><p>Field techs fill out paper, then the back office manually transcribes and evaluates pass/fail. Slow, error-prone, unscalable.</p></div>
+      </div>
+      <div class="pcard rv d2">
+        <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <div><h4>Spreadsheet-Driven Renewals</h4><p>Annual customer outreach lives in a manual spreadsheet — time-intensive coordination that leaves recurring revenue on the table.</p></div>
+      </div>
+      <div class="pcard rv d3">
+        <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <div><h4>Admin Caps Inspection Volume</h4><p>Capacity isn't limited by field talent — it's limited by how fast the office can process and schedule.</p></div>
+      </div>
+      <div class="pcard rv d4">
+        <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+        <div><h4>Growth = More Headcount</h4><p>Scaling means hiring more admin, eroding margin on every inspection.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ========== SOLUTION ========== -->
+<section id="solution" class="sol-sec">
+<div class="sol-bg-stripe"><div></div><div></div><div></div></div>
+<div class="ctn">
+  <div class="sol-head rv">
+    <div class="lbl">Solution</div>
+    <div class="ttl">We take execution completely<br>off your plate.</div>
+    <div class="desc">We build the tools, wire the systems, and run the process — with your team owning quality at every step.</div>
+  </div>
+
+  <div class="wf primary rv">
+    <div class="wf-top">
+      <span class="wf-badge core">★ Core</span>
+      <h3>Custom Digital Report Tool + Automated Reports</h3>
+    </div>
+    <div class="wf-flow">
+      <div class="wf-step">
+        <div class="wf-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg></div>
+        <h5>Custom Digital Tool</h5>
+        <p>Purpose-built for your techs. Replaces paper entirely. Captures all inspection data digitally, on-site.</p>
+      </div>
+      <div class="wf-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="wf-step">
+        <div class="wf-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+        <h5>AI Report Engine</h5>
+        <p>Data flows automatically. AI structures the report, flags pass/fail, and prepares it for review.</p>
+      </div>
+      <div class="wf-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="wf-step">
+        <div class="wf-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+        <h5>QA & Delivery</h5>
+        <p>Your team reviews the auto-generated report, approves or adjusts, and the final version delivers to the client.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wf rv">
+    <div class="wf-top">
+      <span class="wf-badge add">Add-On</span>
+      <h3>Automated Annual Renewals + HubSpot Integration</h3>
+    </div>
+    <div class="wf-flow">
+      <div class="wf-step">
+        <div class="wf-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="2" stroke-linecap="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></div>
+        <h5>HubSpot Sync</h5>
+        <p>Customer data syncs with HubSpot. Renewal dates trigger automated outreach.</p>
+      </div>
+      <div class="wf-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="wf-step">
+        <div class="wf-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg></div>
+        <h5>Smart Outreach</h5>
+        <p>Multi-touch sequences via email and SMS. Personalized and timed to maximize responses.</p>
+      </div>
+      <div class="wf-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="wf-step">
+        <div class="wf-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></div>
+        <h5>Auto-Schedule</h5>
+        <p>Confirmed renewals automatically scheduled. The spreadsheet becomes obsolete.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ========== IMPACT ========== -->
+<section id="impact">
+<div class="ctn">
+  <div style="text-align:center" class="rv">
+    <div class="lbl">Projected Impact</div>
+    <div class="ttl">What This Unlocks</div>
+  </div>
+  <div class="imp-row">
+    <div class="imp-card rv"><div class="imp-v">0</div><div class="imp-l">Hours of manual<br>report transcription</div></div>
+    <div class="imp-card rv d1"><div class="imp-v">3×</div><div class="imp-l">Faster report<br>turnaround</div></div>
+    <div class="imp-card rv d2"><div class="imp-v">∞</div><div class="imp-l">Scale inspections without<br>adding headcount</div></div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ========== PRICING ========== -->
+<section id="pricing" class="pr-sec">
+<div class="ctn">
+  <div class="pr-head rv">
+    <div class="lbl">Investment</div>
+    <div class="ttl">Transparent. Flexible. Risk-free.</div>
+    <div class="desc">No long-term lock-in. Opt out any time. Satisfaction guaranteed.</div>
+  </div>
+  <div class="pr-grid">
+    <div class="pc rv">
+      <div class="pc-tier">Option 1</div>
+      <div class="pc-name">Report Automation</div>
+      <div class="pc-amt">$3,000<span class="pc-per">/mo</span></div>
+      <div class="pc-dev">$10,000 one-time buildout</div>
+      <ul class="pc-feat">
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Custom digital field report tool</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>AI-powered report generation</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Automated pass/fail evaluation</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Human QA review workflow</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Integration with existing systems</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Ongoing maintenance & support</span></li>
+      </ul>
+      <div class="pc-guar">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Satisfaction guaranteed · Cancel any time
+      </div>
+    </div>
+    <div class="pc rec rv d1">
+      <div class="pc-top-badge">✦ RECOMMENDED</div>
+      <div class="pc-tier">Option 2</div>
+      <div class="pc-name">Reports + Renewals</div>
+      <div class="pc-amt">$4,500<span class="pc-per">/mo</span></div>
+      <div class="pc-dev">$15,000 one-time buildout</div>
+      <ul class="pc-feat">
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><strong>Everything in Option 1, plus:</strong></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Automated annual renewal sequences</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Full HubSpot integration & data sync</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Smart scheduling for renewals</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Multi-channel outreach (email + SMS)</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Managed optimization & priority support</span></li>
+      </ul>
+      <div class="pc-guar">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Satisfaction guaranteed · Cancel any time
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ========== TIMELINE ========== -->
+<section id="timeline">
+<div class="ctn">
+  <div class="tl-head rv">
+    <div class="lbl">Implementation</div>
+    <div class="ttl">Live in 6–9 Weeks</div>
+    <div class="desc">Fast, iterative build. Your team is involved at every milestone.</div>
+  </div>
+  <div class="tl-track">
+    <div class="tl-line"></div>
+    <div class="tl-item rv">
+      <div class="tl-dot">1</div>
+      <div class="tl-bd">
+        <div class="tl-wk">Weeks 1–2</div>
+        <h4>Discovery & Architecture</h4>
+        <p>Deep audit of your field reports, back-office workflow, renewal process, and HubSpot setup. Full system design.</p>
+      </div>
+    </div>
+    <div class="tl-item rv d1">
+      <div class="tl-dot">2</div>
+      <div class="tl-bd">
+        <div class="tl-wk">Weeks 3–5</div>
+        <h4>Build Your Custom Report Tool</h4>
+        <p>Digital capture tool developed. Your techs test with real data. AI report pipeline built, trained, and validated.</p>
+      </div>
+    </div>
+    <div class="tl-item rv d2">
+      <div class="tl-dot">3</div>
+      <div class="tl-bd">
+        <div class="tl-wk">Weeks 5–7</div>
+        <h4>Renewal Engine & HubSpot</h4>
+        <p>Automated outreach sequences built, HubSpot connected, smart scheduling live.</p>
+      </div>
+    </div>
+    <div class="tl-item rv d3">
+      <div class="tl-dot">4</div>
+      <div class="tl-bd">
+        <div class="tl-wk">Weeks 7–9</div>
+        <h4>Launch & Optimize</h4>
+        <p>Full system live. We monitor, fine-tune, and optimize both workflows while your team runs at full capacity.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ========== CTA ========== -->
+<section class="cta-sec" id="cta">
+<div class="ctn">
+  <div class="cta-box">
+    <div class="cta-stripes"><div></div><div></div><div></div></div>
+    <h2 style="position:relative">Let's build Infrared Team's<br>reporting engine<span class="accent">.</span></h2>
+    <p>Chris — faster turnaround, automated renewals, and scalable operations start with a single conversation.</p>
+    <p class="cta-sm">No long-term contracts · Satisfaction guaranteed · Opt out any time</p>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="ft-logo"><span class="ft-slash">/</span>ARGO<span class="ft-iq">IQ</span></div>
+  <p>© 2026 ARGO IQ · Confidential Proposal for Infrared Team</p>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{
+  if(el.isIntersecting)el.target.classList.add('vis')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+document.querySelectorAll('nav a').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth'})})});
+</script>
+</body>
+</html>
