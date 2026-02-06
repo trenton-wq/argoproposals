@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARGO IQ — PT 360 Co-Op Recruitment Proposal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f0f0;--s1:#fff;--s2:#f7f7f7;--s3:#eee;--s4:#2a2a2a;
+  --dark:#1a1a1a;--dark2:#2a2a2a;--dark3:#333;
+  --acc:#c8102e;--acc2:#e0132f;--accDim:rgba(200,16,46,0.08);
+  --t1:#111;--t2:#555;--t3:#888;
+  --bdr:rgba(0,0,0,0.06);--bdr2:rgba(0,0,0,0.1);--bdr3:rgba(0,0,0,0.15);
+  --grn:#0a8f3c;--grn2:#0ca648;--grn3:rgba(10,143,60,0.08);
+  --r:12px;--r2:16px;--r3:20px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.018;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.stripe-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.stripe{position:absolute;background:rgba(0,0,0,0.018);transform:rotate(-55deg);transform-origin:center}
+.stripe:nth-child(1){width:300px;height:200%;top:-50%;left:10%}
+.stripe:nth-child(2){width:200px;height:200%;top:-50%;left:35%}
+.stripe:nth-child(3){width:400px;height:200%;top:-50%;left:60%}
+.stripe:nth-child(4){width:150px;height:200%;top:-50%;left:85%}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:64px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(240,240,240,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr)}
+.logo-mark{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:800;color:var(--dark);letter-spacing:2px;display:flex;align-items:baseline}
+.logo-slash{font-weight:300;font-size:28px;color:var(--dark3);margin-right:-2px}
+.logo-iq{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:var(--dark2);vertical-align:super;margin-left:1px;letter-spacing:1.5px}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{color:var(--t3);text-decoration:none;font-size:11.5px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:color .3s}
+.nav-links a:hover{color:var(--t1)}
+
+section{position:relative;z-index:1;padding:120px 60px}
+.ctn{max-width:1080px;width:100%;margin:0 auto}
+.lbl{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--acc);margin-bottom:14px}
+.ttl{font-size:clamp(32px,4.2vw,54px);font-weight:800;line-height:1.08;letter-spacing:-2px;margin-bottom:18px;color:var(--dark)}
+.desc{font-size:17px;color:var(--t2);max-width:520px;line-height:1.75;font-weight:400}
+
+.red-bar{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--acc),var(--acc2),var(--acc));z-index:101}
+
+/* === HERO === */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:64px;position:relative;overflow:hidden}
+.hero-inner{position:relative;z-index:2;max-width:680px}
+.hero-watermark{position:absolute;right:-80px;top:50%;transform:translateY(-50%);
+  font-family:'Orbitron',sans-serif;font-size:280px;font-weight:900;
+  color:rgba(0,0,0,0.03);letter-spacing:10px;white-space:nowrap;pointer-events:none;line-height:1;z-index:0;user-select:none}
+
+.hero-tag{display:inline-flex;align-items:center;gap:10px;padding:8px 20px 8px 12px;
+  border-radius:4px;background:var(--accDim);border-left:3px solid var(--acc);
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--acc);
+  margin-bottom:36px;animation:fU .6s ease both}
+.hero h1{font-size:clamp(42px,5.2vw,72px);font-weight:900;line-height:1;letter-spacing:-3.5px;color:var(--dark);margin-bottom:24px;animation:fU .6s ease .06s both}
+.hero h1 .accent{color:var(--acc)}
+.hero-desc{font-size:19px;color:var(--t2);line-height:1.7;font-weight:400;max-width:560px;margin-bottom:40px;animation:fU .6s ease .12s both}
+
+.hero-checks{display:flex;flex-direction:column;gap:14px;animation:fU .6s ease .18s both;list-style:none}
+.hero-checks li{display:flex;align-items:center;gap:12px;font-size:16px;color:var(--t2);font-weight:400}
+.hero-checks li svg{width:20px;height:20px;flex-shrink:0;stroke:var(--acc);fill:none;stroke-width:2.5;stroke-linecap:round}
+
+.hero-stats{display:flex;gap:0;margin-top:48px;animation:fU .6s ease .24s both;
+  background:var(--dark);border-radius:var(--r);overflow:hidden;max-width:540px}
+.h-stat{flex:1;padding:22px 20px;border-right:1px solid rgba(255,255,255,0.08);text-align:center}
+.h-stat:last-child{border:none}
+.h-stat .val{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:800;color:#fff;line-height:1.2;letter-spacing:-1px}
+.h-stat .val em{font-style:normal;color:var(--acc2)}
+.h-stat .lab{font-size:10px;color:rgba(255,255,255,0.5);font-weight:500;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+.scrl{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;animation:fU .8s ease .4s both}
+.scrl span{font-family:'Orbitron',sans-serif;font-size:8px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;font-weight:600}
+.scrl-arr{width:14px;height:14px;border-right:1.5px solid var(--acc);border-bottom:1.5px solid var(--acc);transform:rotate(45deg);animation:sB 2.5s infinite}
+@keyframes sB{0%,100%{transform:rotate(45deg) translate(0,0);opacity:.15}50%{transform:rotate(45deg) translate(3px,3px);opacity:1}}
+@keyframes fU{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+.dv{height:1px;margin:0 60px;background:var(--bdr2);position:relative;z-index:1}
+.dv::before{content:'';position:absolute;left:0;top:-1px;width:60px;height:3px;background:var(--acc)}
+
+/* === PROBLEM === */
+.prob-section{padding:120px 60px}
+.prob-top{margin-bottom:56px;max-width:600px}
+.prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pcard{padding:26px 24px;border-radius:var(--r);background:var(--s1);border:1px solid var(--bdr);
+  transition:all .4s cubic-bezier(.16,1,.3,1);cursor:default;position:relative;overflow:hidden}
+.pcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--acc);transition:width .3s}
+.pcard:hover{border-color:var(--bdr2);transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,0,0,0.06)}
+.pcard:hover::before{width:3px}
+.pcard-ic{width:38px;height:38px;border-radius:8px;background:var(--accDim);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.pcard h4{font-size:14.5px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.pcard p{font-size:13px;color:var(--t2);line-height:1.55}
+
+/* === SOLUTION === */
+.sol-sec{background:var(--dark);color:#fff;padding:120px 60px;position:relative;overflow:hidden}
+.sol-sec .lbl{color:var(--acc2)}.sol-sec .ttl{color:#fff}.sol-sec .desc{color:rgba(255,255,255,0.55)}
+.sol-bg-stripe{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.sol-bg-stripe div{position:absolute;background:rgba(255,255,255,0.015);transform:rotate(-55deg);transform-origin:center}
+.sol-bg-stripe div:nth-child(1){width:300px;height:200%;top:-50%;left:5%}
+.sol-bg-stripe div:nth-child(2){width:200px;height:200%;top:-50%;left:40%}
+.sol-bg-stripe div:nth-child(3){width:350px;height:200%;top:-50%;left:70%}
+
+.sol-head{margin-bottom:64px;position:relative;z-index:1;max-width:600px}
+.sol-head .desc{color:rgba(255,255,255,0.55)}
+
+/* Pipeline visual */
+.pipe{position:relative;z-index:1}
+.pipe-step{display:grid;grid-template-columns:60px 1fr;gap:24px;margin-bottom:24px;align-items:start}
+.pipe-marker{display:flex;flex-direction:column;align-items:center}
+.pipe-dot{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.04);
+  border:2px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;
+  transition:all .3s;z-index:2}
+.pipe-step:hover .pipe-dot{border-color:var(--acc);background:rgba(200,16,46,0.1);box-shadow:0 0 0 4px rgba(200,16,46,0.08)}
+.pipe-line{width:2px;flex:1;background:rgba(255,255,255,0.06);min-height:20px}
+.pipe-step:last-child .pipe-line{display:none}
+.pipe-content{padding:14px 24px;border-radius:var(--r);background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);transition:all .3s}
+.pipe-step:hover .pipe-content{border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.06)}
+.pipe-content h4{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.pipe-content h4 .ptag{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;padding:3px 8px;
+  border-radius:4px;letter-spacing:1.5px;text-transform:uppercase;background:rgba(200,16,46,0.2);color:var(--acc2)}
+.pipe-content p{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.55}
+
+/* === COMPARE === */
+.cmp-sec{padding:120px 60px}
+.cmp-head{text-align:center;margin-bottom:56px}
+.cmp-head .desc{margin:0 auto}
+.cmp-table{max-width:800px;margin:0 auto;border-radius:var(--r2);overflow:hidden;border:1px solid var(--bdr2)}
+.cmp-row{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--bdr)}
+.cmp-row:last-child{border:none}
+.cmp-row.head{background:var(--dark);color:#fff}
+.cmp-row.head .cmp-cell{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.6)}
+.cmp-row.head .cmp-cell:last-child{color:var(--acc2)}
+.cmp-cell{padding:16px 20px;font-size:13px;color:var(--t2);background:var(--s1)}
+.cmp-cell:first-child{font-weight:600;color:var(--t1);background:var(--s2)}
+.cmp-cell:last-child{background:var(--accDim);color:var(--dark);font-weight:600}
+.cmp-row.head .cmp-cell{background:var(--dark)}
+.cmp-cell.highlight{color:var(--acc);font-weight:700}
+
+/* === PRICING === */
+.pr-sec{padding:120px 60px 100px}
+.pr-head{text-align:center;margin-bottom:56px}.pr-head .desc{margin:0 auto}
+.pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:880px;margin:0 auto}
+
+.pc{border-radius:var(--r2);background:var(--s1);border:1px solid var(--bdr);
+  padding:40px 34px;position:relative;transition:all .4s;overflow:hidden}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:0;background:var(--acc);transition:height .3s}
+.pc:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.08)}
+.pc:hover::before{height:3px}
+
+.pc-ic{width:48px;height:48px;border-radius:12px;background:var(--accDim);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.pc-label{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.pc-name{font-size:20px;font-weight:700;color:var(--dark);margin-bottom:6px}
+.pc-desc{font-size:13px;color:var(--t2);line-height:1.55;margin-bottom:20px}
+.pc-amt{font-family:'Orbitron',sans-serif;font-size:44px;font-weight:800;letter-spacing:-2px;line-height:1;color:var(--dark)}
+.pc-per{font-family:'Inter',sans-serif;font-size:14px;color:var(--t3);font-weight:400}
+.pc-note{font-size:12px;color:var(--t3);margin-top:6px;font-style:italic}
+
+.pc-divider{height:1px;background:var(--bdr);margin:20px 0}
+
+.pc-feat{list-style:none;display:flex;flex-direction:column;gap:10px}
+.pc-feat li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--t2);line-height:1.4}
+.ck{width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:1px;background:var(--grn3);display:flex;align-items:center;justify-content:center}
+.ck svg{width:10px;height:10px;stroke:var(--grn);fill:none;stroke-width:3;stroke-linecap:round}
+
+/* Scenario box */
+.scenario-box{max-width:880px;margin:40px auto 0;padding:28px 32px;border-radius:var(--r2);
+  background:var(--s1);border:1px solid var(--bdr2);box-shadow:0 4px 20px rgba(0,0,0,0.04)}
+.scenario-box h4{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--acc);margin-bottom:16px}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:14px;color:var(--t2)}
+.sc-row.total{border-top:2px solid var(--bdr2);margin-top:8px;padding-top:14px;font-weight:700;color:var(--dark);font-size:15px}
+.sc-row .sv{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700}
+.sc-row .sv.red{color:var(--acc)}
+
+.pc-guar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;
+  background:var(--grn3);font-size:11.5px;color:var(--grn);font-weight:600;margin-top:20px;
+  max-width:880px;margin-left:auto;margin-right:auto}
+.pc-guar svg{flex-shrink:0;width:14px;height:14px;stroke:var(--grn);fill:none;stroke-width:2;stroke-linecap:round}
+
+/* === TIMELINE === */
+.tl-head{text-align:center;margin-bottom:60px}.tl-head .desc{margin:0 auto}
+.tl-track{position:relative;max-width:720px;margin:0 auto}
+.tl-line{position:absolute;left:18px;top:0;bottom:0;width:2px;background:var(--bdr2);border-radius:2px}
+.tl-line::before{content:'';position:absolute;top:0;left:0;width:100%;height:50%;background:var(--acc);border-radius:2px;animation:tlFill 3s ease 1s both}
+@keyframes tlFill{from{height:0}}
+.tl-item{display:flex;gap:28px;margin-bottom:28px;position:relative}
+.tl-dot{width:38px;height:38px;border-radius:50%;flex-shrink:0;background:var(--s1);border:2px solid var(--bdr2);z-index:2;
+  display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:800;color:var(--t3);transition:all .3s}
+.tl-item:hover .tl-dot{border-color:var(--acc);color:var(--acc);box-shadow:0 0 0 4px var(--accDim)}
+.tl-bd{padding:22px 26px;border-radius:var(--r);flex:1;background:var(--s1);border:1px solid var(--bdr);transition:all .3s}
+.tl-item:hover .tl-bd{border-color:var(--bdr2);box-shadow:0 8px 24px rgba(0,0,0,0.05)}
+.tl-wk{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--acc);margin-bottom:4px}
+.tl-bd h4{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.tl-bd p{font-size:12.5px;color:var(--t2);line-height:1.55}
+
+/* === CTA === */
+.cta-sec{text-align:center;padding:80px 60px 120px}
+.cta-box{padding:64px 48px;border-radius:var(--r2);position:relative;overflow:hidden;background:var(--dark);color:#fff}
+.cta-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--acc)}
+.cta-stripes{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.cta-stripes div{position:absolute;background:rgba(255,255,255,0.012);transform:rotate(-55deg);transform-origin:center}
+.cta-stripes div:nth-child(1){width:250px;height:200%;top:-50%;left:10%}
+.cta-stripes div:nth-child(2){width:180px;height:200%;top:-50%;left:50%}
+.cta-stripes div:nth-child(3){width:300px;height:200%;top:-50%;left:75%}
+.cta-box h2{font-size:clamp(26px,3.5vw,42px);font-weight:800;letter-spacing:-1.5px;margin-bottom:16px;position:relative;line-height:1.1}
+.cta-box h2 .accent{color:var(--acc2)}
+.cta-box>p{font-size:17px;color:rgba(255,255,255,0.55);max-width:480px;margin:0 auto 10px;line-height:1.7;position:relative}
+.cta-sm{font-size:12px;color:rgba(255,255,255,0.3);position:relative}
+
+footer{text-align:center;padding:32px;border-top:1px solid var(--bdr);position:relative;z-index:1}
+.ft-logo{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:800;color:var(--dark);letter-spacing:3px;margin-bottom:5px;display:flex;align-items:baseline;justify-content:center}
+.ft-slash{font-weight:300;font-size:20px;color:var(--dark3);margin-right:-1px}
+.ft-iq{font-size:8px;color:var(--dark2);vertical-align:super;margin-left:1px;letter-spacing:1.5px;font-weight:700}
+footer p{font-size:11px;color:var(--t3)}
+
+.rv{opacity:0;transform:translateY(32px);transition:all .75s cubic-bezier(.16,1,.3,1)}
+.rv.vis{opacity:1;transform:translateY(0)}
+.rv.d1{transition-delay:.06s}.rv.d2{transition-delay:.12s}.rv.d3{transition-delay:.18s}.rv.d4{transition-delay:.24s}
+
+@media(max-width:960px){
+  section,.prob-section,.sol-sec,.cmp-sec,.pr-sec{padding:80px 20px}
+  .prob-grid{grid-template-columns:1fr}
+  .pipe-step{grid-template-columns:40px 1fr;gap:16px}
+  .pr-grid{grid-template-columns:1fr}
+  .cmp-row{grid-template-columns:1fr}
+  .cmp-cell:first-child{display:none}
+  nav{padding:0 20px}.nav-links{gap:16px}
+  .hero-stats{flex-direction:column;border-radius:var(--r)}
+  .h-stat{border-right:none;border-bottom:1px solid rgba(255,255,255,0.08);padding:16px 20px}
+  .h-stat:last-child{border:none}
+  .stripe-bg{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="red-bar"></div>
+<div class="grain"></div>
+<div class="stripe-bg"><div class="stripe"></div><div class="stripe"></div><div class="stripe"></div><div class="stripe"></div></div>
+
+<nav>
+  <div class="logo-mark"><span class="logo-slash">/</span>ARGO<span class="logo-iq">IQ</span></div>
+  <div class="nav-links">
+    <a href="#solution">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#timeline">Timeline</a>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+<div class="ctn">
+  <div class="hero-inner">
+    <div class="hero-tag">Prepared for PT 360 Co-Op</div>
+    <h1>3 open chairs<span class="accent">.</span><br>We'll fill them<span class="accent">.</span></h1>
+    <p class="hero-desc">An AI-powered recruitment engine built specifically for physical therapy hiring. We source, screen, and deliver qualified PT candidates — you only pay the full fee when they accept. And the system keeps your pipeline full long after the first three are placed.</p>
+    <ul class="hero-checks">
+      <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg> AI-powered sourcing across PT-specific channels</li>
+      <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg> You only pay the success fee when a candidate accepts</li>
+      <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg> Pipeline stays warm so you're never scrambling again</li>
+    </ul>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="val">3</div><div class="lab">Positions to Fill</div></div>
+      <div class="h-stat"><div class="val">$5.5k</div><div class="lab">Per Placement</div></div>
+      <div class="h-stat"><div class="val">60–70<em>%</em></div><div class="lab">Less Than Traditional</div></div>
+    </div>
+  </div>
+  <div class="hero-watermark">/A</div>
+</div>
+<div class="scrl"><span>Scroll</span><div class="scrl-arr"></div></div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ========== PROBLEM ========== -->
+<section class="prob-section" id="problem">
+<div class="ctn">
+  <div class="prob-top rv">
+    <div class="lbl">The Reality</div>
+    <div class="ttl">PT recruitment is broken. You already know this.</div>
+    <div class="desc">The PT labor market is tight and getting tighter. Traditional recruiting methods are either too expensive, too slow, or both.</div>
+  </div>
+  <div class="prob-grid">
+    <div class="pcard rv d1">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+      <h4>Traditional Recruiters Are Expensive</h4>
+      <p>PT staffing agencies charge 20–25% of first-year salary. For a PT making $80K, that's $16,000–$20,000 per hire. Multiply that by three and you're looking at $50K+.</p>
+    </div>
+    <div class="pcard rv d2">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+      <h4>Job Boards Are a Black Hole</h4>
+      <p>Post and pray doesn't work for PT roles. The best candidates aren't scrolling Indeed — they're being reached directly by people who know where to find them.</p>
+    </div>
+    <div class="pcard rv d3">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+      <h4>Every Open Chair Costs You</h4>
+      <p>An unfilled PT position means lost revenue, strained staff, and patients who can't get seen. The longer it takes, the more it costs in every direction.</p>
+    </div>
+    <div class="pcard rv d4">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></div>
+      <h4>You Don't Have Time for This</h4>
+      <p>You're running a practice, not a recruiting department. Sourcing, outreach, screening, and follow-up shouldn't be on your plate.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ========== SOLUTION ========== -->
+<section id="solution" class="sol-sec">
+<div class="sol-bg-stripe"><div></div><div></div><div></div></div>
+<div class="ctn">
+  <div class="sol-head rv">
+    <div class="lbl">How It Works</div>
+    <div class="ttl">An AI-powered recruitment<br>pipeline. End to end.</div>
+    <div class="desc">We don't just post and pray. We actively source, engage, screen, and deliver qualified PT candidates using AI-driven outreach at scale.</div>
+  </div>
+
+  <div class="pipe">
+    <div class="pipe-step rv">
+      <div class="pipe-marker">
+        <div class="pipe-dot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
+        <div class="pipe-line"></div>
+      </div>
+      <div class="pipe-content">
+        <h4>AI-Powered Sourcing <span class="ptag">Automated</span></h4>
+        <p>We identify qualified PTs across LinkedIn, professional networks, PT-specific job boards, and alumni databases. AI helps us find passive candidates who aren't actively looking but are open to the right opportunity.</p>
+      </div>
+    </div>
+    <div class="pipe-step rv d1">
+      <div class="pipe-marker">
+        <div class="pipe-dot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg></div>
+        <div class="pipe-line"></div>
+      </div>
+      <div class="pipe-content">
+        <h4>Personalized Outreach <span class="ptag">AI-Assisted</span></h4>
+        <p>Multi-touch outreach sequences personalized to each candidate. We highlight what makes PT 360 Co-Op unique — your culture, your patient model, your location — to cut through the noise.</p>
+      </div>
+    </div>
+    <div class="pipe-step rv d2">
+      <div class="pipe-marker">
+        <div class="pipe-dot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="2" stroke-linecap="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg></div>
+        <div class="pipe-line"></div>
+      </div>
+      <div class="pipe-content">
+        <h4>Screening & Qualification</h4>
+        <p>We pre-screen every candidate for licensure, experience, specialty fit, and culture alignment. You only talk to candidates who are genuinely qualified and interested.</p>
+      </div>
+    </div>
+    <div class="pipe-step rv d3">
+      <div class="pipe-marker">
+        <div class="pipe-dot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+        <div class="pipe-line"></div>
+      </div>
+      <div class="pipe-content">
+        <h4>Interview & Placement</h4>
+        <p>We coordinate interviews, manage follow-ups, and help close the candidate. You pay the success fee only when they accept. No placement, no fee.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ========== COMPARISON ========== -->
+<section class="cmp-sec" id="compare">
+<div class="ctn">
+  <div class="cmp-head rv">
+    <div class="lbl">The Comparison</div>
+    <div class="ttl">Why this is a no-brainer.</div>
+    <div class="desc">Here's how ARGO IQ stacks up against your other options for filling 3 PT positions.</div>
+  </div>
+  <div class="cmp-table rv">
+    <div class="cmp-row head">
+      <div class="cmp-cell"></div>
+      <div class="cmp-cell">Traditional Recruiter</div>
+      <div class="cmp-cell">ARGO IQ</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-cell">Cost per placement</div>
+      <div class="cmp-cell">$16,000–$20,000</div>
+      <div class="cmp-cell highlight">$5,500</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-cell">Total cost (3 hires)</div>
+      <div class="cmp-cell">$48,000–$60,000</div>
+      <div class="cmp-cell highlight">$16,500 + system</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-cell">Sourcing method</div>
+      <div class="cmp-cell">Manual, network-based</div>
+      <div class="cmp-cell">AI-powered + manual</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-cell">Ongoing pipeline</div>
+      <div class="cmp-cell">Starts over each time</div>
+      <div class="cmp-cell">Always-on system</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-cell">Pay structure</div>
+      <div class="cmp-cell">% of salary upfront</div>
+      <div class="cmp-cell">Only on placement</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ========== PRICING ========== -->
+<section id="pricing" class="pr-sec">
+<div class="ctn">
+  <div class="pr-head rv">
+    <div class="lbl">Investment</div>
+    <div class="ttl">Two simple components.</div>
+    <div class="desc">A low monthly retainer keeps the system running. Success fees only hit when we deliver.</div>
+  </div>
+  <div class="pr-grid rv">
+    <div class="pc">
+      <div class="pc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+      <div class="pc-label">Component 1</div>
+      <div class="pc-name">Recruitment System</div>
+      <div class="pc-desc">The always-on AI sourcing engine, outreach automation, pipeline management, and candidate screening.</div>
+      <div class="pc-amt">$1,000<span class="pc-per">/mo</span></div>
+      <div class="pc-note">Keeps your pipeline active and full</div>
+      <div class="pc-divider"></div>
+      <ul class="pc-feat">
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>AI-powered candidate sourcing</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Automated outreach sequences</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Pipeline tracking & reporting</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Candidate pre-screening</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Weekly pipeline updates</span></li>
+      </ul>
+    </div>
+    <div class="pc" style="border-color:var(--bdr2);box-shadow:0 8px 32px rgba(0,0,0,0.06)">
+      <div class="pc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+      <div class="pc-label">Component 2</div>
+      <div class="pc-name">Success Fee</div>
+      <div class="pc-desc">Paid only when a candidate accepts your offer. No placement, no fee. Zero risk.</div>
+      <div class="pc-amt">$5,500<span class="pc-per">/hire</span></div>
+      <div class="pc-note">Only when we deliver a placed PT</div>
+      <div class="pc-divider"></div>
+      <ul class="pc-feat">
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Fee triggered on accepted offer only</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Interview coordination included</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Offer negotiation support</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>30-day placement guarantee</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Replacement search if needed</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="scenario-box rv">
+    <h4>Your Scenario — 3 PT Hires</h4>
+    <div class="sc-row"><span>Recruitment system (est. 3 months)</span><span class="sv">$3,000</span></div>
+    <div class="sc-row"><span>Success fees (3 × $5,500)</span><span class="sv">$16,500</span></div>
+    <div class="sc-row total"><span>Total estimated investment</span><span class="sv red">$19,500</span></div>
+    <div class="sc-row" style="padding-top:12px;border-top:1px solid var(--bdr);margin-top:8px"><span style="color:var(--t3)">vs. traditional recruiter for 3 PTs</span><span class="sv" style="color:var(--t3);text-decoration:line-through">$48,000–$60,000</span></div>
+  </div>
+
+  <div class="pc-guar rv" style="margin-top:20px">
+    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Satisfaction guaranteed · Cancel monthly retainer any time · Success fees only on placement
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ========== TIMELINE ========== -->
+<section id="timeline">
+<div class="ctn">
+  <div class="tl-head rv">
+    <div class="lbl">Timeline</div>
+    <div class="ttl">Candidates in your pipeline<br>within 2 weeks.</div>
+    <div class="desc">We move fast. You'll see qualified candidates before the month is out.</div>
+  </div>
+  <div class="tl-track">
+    <div class="tl-line"></div>
+    <div class="tl-item rv">
+      <div class="tl-dot">1</div>
+      <div class="tl-bd">
+        <div class="tl-wk">Week 1</div>
+        <h4>Intake & System Build</h4>
+        <p>Deep dive into your ideal PT profile — specialty, experience, culture fit, compensation. We build the sourcing criteria and outreach sequences.</p>
+      </div>
+    </div>
+    <div class="tl-item rv d1">
+      <div class="tl-dot">2</div>
+      <div class="tl-bd">
+        <div class="tl-wk">Weeks 2–3</div>
+        <h4>Active Sourcing & First Candidates</h4>
+        <p>AI sourcing engine goes live. Outreach begins. First qualified candidates entering your pipeline. You start seeing profiles and scheduling conversations.</p>
+      </div>
+    </div>
+    <div class="tl-item rv d2">
+      <div class="tl-dot">3</div>
+      <div class="tl-bd">
+        <div class="tl-wk">Weeks 4–8</div>
+        <h4>Interviews & Placements</h4>
+        <p>Candidates move through interviews. We manage scheduling, follow-ups, and help close offers. First placements land.</p>
+      </div>
+    </div>
+    <div class="tl-item rv d3">
+      <div class="tl-dot">∞</div>
+      <div class="tl-bd">
+        <div class="tl-wk">Ongoing</div>
+        <h4>Pipeline Stays Warm</h4>
+        <p>Even after the first 3 are placed, the system keeps running. When the next opening comes — and it will — you've got qualified candidates ready to go instead of starting from scratch.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ========== CTA ========== -->
+<section class="cta-sec" id="cta">
+<div class="ctn">
+  <div class="cta-box">
+    <div class="cta-stripes"><div></div><div></div><div></div></div>
+    <h2 style="position:relative">Let's fill those 3 chairs<span class="accent">.</span><br>And keep the pipeline full after<span class="accent">.</span></h2>
+    <p>PT 360 — at $5,500 per placement, you're paying a fraction of what any traditional recruiter charges. And you get a system that never stops working.</p>
+    <p class="cta-sm">No long-term contracts · Success fees only on placement · Satisfaction guaranteed</p>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="ft-logo"><span class="ft-slash">/</span>ARGO<span class="ft-iq">IQ</span></div>
+  <p>© 2026 ARGO IQ · Confidential Proposal for PT 360 Co-Op</p>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('vis')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+document.querySelectorAll('nav a').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})})});
+</script>
+</body>
+</html>
