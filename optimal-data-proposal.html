@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARGO IQ — Optimal Data Proposal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f0f0;--s1:#fff;--s2:#f7f7f7;--s3:#eee;--s4:#2a2a2a;
+  --dark:#1a1a1a;--dark2:#2a2a2a;--dark3:#333;
+  --acc:#c8102e;--acc2:#e0132f;--accDim:rgba(200,16,46,0.08);
+  --t1:#111;--t2:#555;--t3:#888;
+  --bdr:rgba(0,0,0,0.06);--bdr2:rgba(0,0,0,0.1);--bdr3:rgba(0,0,0,0.15);
+  --grn:#0a8f3c;--grn2:#0ca648;--grn3:rgba(10,143,60,0.08);
+  --r:12px;--r2:16px;--r3:20px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.018;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.stripe-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.stripe{position:absolute;background:rgba(0,0,0,0.018);transform:rotate(-55deg);transform-origin:center}
+.stripe:nth-child(1){width:300px;height:200%;top:-50%;left:10%}
+.stripe:nth-child(2){width:200px;height:200%;top:-50%;left:35%}
+.stripe:nth-child(3){width:400px;height:200%;top:-50%;left:60%}
+.stripe:nth-child(4){width:150px;height:200%;top:-50%;left:85%}
+
+.top-bar{position:fixed;top:0;left:0;right:0;height:4px;background:var(--acc);z-index:200}
+
+nav{position:fixed;top:4px;left:0;right:0;z-index:100;padding:0 48px;height:64px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(240,240,240,0.88);backdrop-filter:blur(24px) saturate(1.4);
+  border-bottom:1px solid var(--bdr2)}
+.logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;letter-spacing:2px;color:var(--dark);display:flex;align-items:center}
+.logo-slash{color:var(--acc);font-weight:300;font-size:22px;margin-right:1px}
+.logo-iq{font-size:9px;color:var(--acc);vertical-align:super;letter-spacing:1px;margin-left:2px;font-weight:800}
+.nav-r{display:flex;align-items:center;gap:28px}
+.nav-r a{font-size:13px;font-weight:600;color:var(--t2);text-decoration:none;letter-spacing:.5px;transition:color .25s}
+.nav-r a:hover{color:var(--t1)}
+.nav-pill{background:var(--acc)!important;color:#fff!important;padding:10px 22px;border-radius:8px;
+  font-weight:700!important;font-size:12px!important;letter-spacing:.8px!important;text-transform:uppercase;
+  transition:all .3s!important}
+.nav-pill:hover{background:var(--acc2)!important;transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,16,46,0.25)}
+
+.ctn{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+section{padding:120px 40px;position:relative}
+.lbl{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--acc);margin-bottom:16px}
+.ttl{font-size:clamp(28px,3.8vw,44px);font-weight:900;letter-spacing:-1.2px;line-height:1.12;margin-bottom:20px}
+.desc{font-size:17px;color:var(--t2);line-height:1.75;max-width:580px}
+.accent{color:var(--acc)}
+.dv{width:100%;max-width:1100px;margin:0 auto;height:1px;background:var(--bdr2);position:relative;z-index:1}
+
+/* ===== HERO ===== */
+.hero{padding:160px 40px 100px;position:relative;overflow:hidden}
+.hero-watermark{position:absolute;right:-40px;top:50%;transform:translateY(-50%);
+  font-family:'Orbitron',sans-serif;font-size:min(40vw,400px);font-weight:900;
+  color:rgba(200,16,46,0.035);line-height:1;pointer-events:none;z-index:0;letter-spacing:-10px}
+.hero-badge{display:inline-flex;align-items:center;gap:10px;padding:8px 18px;
+  background:var(--s1);border:1px solid var(--bdr2);border-radius:40px;font-size:12px;
+  font-weight:600;color:var(--t2);margin-bottom:32px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.hero-badge .live{width:8px;height:8px;background:var(--grn);border-radius:50%;
+  animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(10,143,60,0.3)}50%{opacity:.8;box-shadow:0 0 0 6px rgba(10,143,60,0)}}
+.hero h1{font-size:clamp(36px,5.2vw,62px);font-weight:900;letter-spacing:-2.5px;line-height:1.05;margin-bottom:24px}
+.hero h1 .gr{background:linear-gradient(135deg,var(--acc),#e84040);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-p{font-size:18px;color:var(--t2);line-height:1.75;max-width:540px;margin-bottom:36px}
+.hero-checks{list-style:none;display:flex;flex-direction:column;gap:14px;margin-bottom:44px}
+.hero-checks li{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;color:var(--t1)}
+.hero-checks svg{width:22px;height:22px;stroke:var(--grn);fill:none;stroke-width:2.5;flex-shrink:0;
+  background:var(--grn3);border-radius:50%;padding:4px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:var(--dark);border-radius:16px;
+  padding:0;overflow:hidden;max-width:540px;box-shadow:0 12px 40px rgba(0,0,0,0.12)}
+.h-stat{padding:28px 24px;text-align:center;position:relative}
+.h-stat:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;bottom:20%;width:1px;
+  background:rgba(255,255,255,0.08)}
+.h-stat .val{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:6px}
+.h-stat .val em{font-style:normal;font-size:18px;color:var(--acc)}
+.h-stat .lab{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:.5px;font-weight:500}
+.scrl{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;
+  align-items:center;gap:8px;z-index:2}
+.scrl span{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:3px;color:var(--t3);text-transform:uppercase}
+.scrl-arr{width:1px;height:32px;background:linear-gradient(to bottom,var(--t3),transparent);
+  animation:scrollPulse 2s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:.3;height:24px}50%{opacity:1;height:36px}}
+
+/* ===== PROBLEM ===== */
+.prob-section{background:var(--bg);padding:120px 40px}
+.prob-top{text-align:center;margin-bottom:64px}
+.prob-top .desc{margin:0 auto}
+.prob-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.pcard{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r2);padding:36px 32px;
+  position:relative;overflow:hidden;transition:all .35s cubic-bezier(.16,1,.3,1)}
+.pcard::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--acc);
+  opacity:0;transition:opacity .35s}
+.pcard:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.06)}
+.pcard:hover::before{opacity:1}
+.pcard-ic{width:44px;height:44px;border-radius:10px;background:var(--accDim);
+  display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.pcard h4{font-size:17px;font-weight:800;margin-bottom:10px;letter-spacing:-.3px}
+.pcard p{font-size:14px;color:var(--t2);line-height:1.7}
+
+/* ===== TWO ENGINES ===== */
+.eng-sec{background:var(--dark);color:#fff;padding:120px 40px;position:relative;overflow:hidden}
+.eng-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.eng-bg>div{position:absolute;background:rgba(255,255,255,0.012);transform:rotate(-55deg);transform-origin:center}
+.eng-bg>div:nth-child(1){width:300px;height:200%;top:-50%;left:15%}
+.eng-bg>div:nth-child(2){width:200px;height:200%;top:-50%;left:45%}
+.eng-bg>div:nth-child(3){width:350px;height:200%;top:-50%;left:70%}
+.eng-head{text-align:center;margin-bottom:72px}
+.eng-head .lbl{color:var(--acc2)}
+.eng-head .ttl{color:#fff}
+.eng-head .desc{color:rgba(255,255,255,0.55);margin:0 auto}
+
+.eng-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;max-width:960px;margin:0 auto;align-items:stretch}
+.eng-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r2);
+  padding:44px 36px;position:relative;overflow:hidden;transition:all .35s}
+.eng-card:hover{background:rgba(255,255,255,0.06);transform:translateY(-3px)}
+.eng-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--acc)}
+.eng-num{font-family:'Orbitron',sans-serif;font-size:48px;font-weight:900;color:rgba(200,16,46,0.15);
+  position:absolute;top:20px;right:28px;line-height:1}
+.eng-tag{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--acc2);margin-bottom:16px;display:inline-block;
+  background:rgba(200,16,46,0.12);padding:4px 12px;border-radius:4px}
+.eng-card h3{font-size:22px;font-weight:900;margin-bottom:12px;letter-spacing:-.5px;color:#fff}
+.eng-card>p{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:28px}
+.eng-steps{list-style:none;display:flex;flex-direction:column;gap:16px}
+.eng-steps li{display:flex;gap:14px;font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;align-items:flex-start}
+.eng-steps li .sn{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:800;color:var(--acc2);
+  min-width:24px;width:24px;height:24px;border-radius:6px;background:rgba(200,16,46,0.12);display:flex;
+  align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.eng-steps li strong{color:#fff;font-weight:700}
+
+/* ===== ROI ===== */
+.roi-sec{padding:120px 40px}
+.roi-head{text-align:center;margin-bottom:64px}
+.roi-head .desc{margin:0 auto}
+.roi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;max-width:820px;margin:0 auto}
+.roi-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r2);padding:36px 32px;text-align:center}
+.roi-card .roi-label{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--t3);margin-bottom:16px}
+.roi-card .roi-val{font-family:'Orbitron',sans-serif;font-size:36px;font-weight:900;letter-spacing:-1px;
+  margin-bottom:8px}
+.roi-card .roi-val.green{color:var(--grn)}
+.roi-card .roi-val.red{color:var(--acc)}
+.roi-card .roi-detail{font-size:13px;color:var(--t2);line-height:1.7}
+.roi-note{text-align:center;margin-top:32px;font-size:14px;color:var(--t3);font-style:italic}
+
+/* ===== PRICING ===== */
+.price-sec{background:var(--s2);padding:120px 40px;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.price-head{text-align:center;margin-bottom:64px}
+.price-head .desc{margin:0 auto}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto}
+.price-card{background:var(--s1);border:1px solid var(--bdr2);border-radius:var(--r2);overflow:hidden;
+  position:relative;transition:all .35s cubic-bezier(.16,1,.3,1)}
+.price-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.06)}
+.price-card.featured{border-color:var(--acc);box-shadow:0 8px 32px rgba(200,16,46,0.08)}
+.price-card.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--acc)}
+.price-top{padding:32px 28px 20px}
+.price-badge{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--acc);margin-bottom:10px;display:inline-block;
+  background:var(--accDim);padding:5px 14px;border-radius:5px}
+.price-name{font-size:20px;font-weight:900;letter-spacing:-.5px;margin-bottom:6px}
+.price-desc{font-size:13px;color:var(--t3);margin-bottom:18px;line-height:1.6}
+.price-amt{font-family:'Orbitron',sans-serif;font-size:32px;font-weight:900;letter-spacing:-1px}
+.price-amt span{font-size:14px;font-weight:500;color:var(--t3);letter-spacing:0}
+.price-pct{font-size:12px;color:var(--t3);margin-top:4px}
+.price-feats{padding:18px 28px 28px;border-top:1px solid var(--bdr)}
+.price-feats ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+.price-feats li{font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:10px;line-height:1.55}
+.price-feats li svg{width:18px;height:18px;stroke:var(--grn);fill:none;stroke-width:2.5;flex-shrink:0;margin-top:2px}
+.price-feats li.dim{color:var(--t3);opacity:.5}
+.price-feats li.dim svg{stroke:var(--t3)}
+
+.bundle-box{max-width:960px;margin:32px auto 0;background:var(--dark);border-radius:var(--r2);padding:36px 40px;
+  display:flex;align-items:center;justify-content:space-between;gap:32px}
+.bundle-left{flex:1}
+.bundle-left .lbl{color:var(--acc2);margin-bottom:8px}
+.bundle-left h3{font-size:24px;font-weight:900;color:#fff;letter-spacing:-.5px;margin-bottom:8px}
+.bundle-left p{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.7}
+.bundle-right{text-align:center;flex-shrink:0}
+.bundle-price{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:900;color:#fff;letter-spacing:-1px}
+.bundle-price span{font-size:16px;font-weight:500;color:rgba(255,255,255,0.45);letter-spacing:0}
+.bundle-save{font-size:12px;color:var(--grn2);font-weight:600;margin-top:4px}
+.bundle-was{font-size:12px;color:rgba(255,255,255,0.35);text-decoration:line-through;margin-top:2px}
+
+/* ===== TRUST ===== */
+.trust-sec{padding:100px 40px}
+.trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:0 auto}
+.trust-card{text-align:center;padding:36px 28px;background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r2)}
+.trust-ic{width:52px;height:52px;border-radius:14px;background:var(--accDim);margin:0 auto 18px;
+  display:flex;align-items:center;justify-content:center}
+.trust-card h4{font-size:16px;font-weight:800;margin-bottom:8px;letter-spacing:-.2px}
+.trust-card p{font-size:13px;color:var(--t2);line-height:1.7}
+
+/* ===== TIMELINE ===== */
+.tl-sec{background:var(--dark);color:#fff;padding:120px 40px;position:relative;overflow:hidden}
+.tl-sec .eng-bg>div{background:rgba(255,255,255,0.01)}
+.tl-head{text-align:center;margin-bottom:64px}
+.tl-head .lbl{color:var(--acc2)}
+.tl-head .ttl{color:#fff}
+.tl-head .desc{color:rgba(255,255,255,0.5);margin:0 auto}
+.tl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:960px;margin:0 auto}
+.tl-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r2);
+  padding:32px 24px;position:relative;transition:all .35s}
+.tl-card:hover{background:rgba(255,255,255,0.06);transform:translateY(-3px)}
+.tl-card::before{content:'';position:absolute;top:0;left:24px;right:24px;height:3px;border-radius:0 0 3px 3px;
+  background:var(--acc);opacity:0;transition:opacity .35s}
+.tl-card:hover::before{opacity:1}
+.tl-wk{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--acc2);margin-bottom:14px}
+.tl-card h4{font-size:16px;font-weight:800;margin-bottom:10px;color:#fff;letter-spacing:-.2px}
+.tl-card p{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.7}
+
+/* ===== EXPAND ===== */
+.expand-sec{padding:100px 40px}
+.expand-head{text-align:center;margin-bottom:48px}
+.expand-head .desc{margin:0 auto}
+.expand-timeline{max-width:700px;margin:0 auto}
+.exp-item{display:flex;gap:28px;margin-bottom:32px;position:relative}
+.exp-marker{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.exp-dot{width:40px;height:40px;border-radius:50%;border:2px solid var(--bdr2);background:var(--s1);
+  display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;
+  font-size:11px;font-weight:800;color:var(--t3);position:relative;z-index:1}
+.exp-dot.active{border-color:var(--acc);color:var(--acc);background:var(--accDim)}
+.exp-line{width:2px;flex:1;background:var(--bdr2);margin-top:4px;min-height:16px}
+.exp-item:last-child .exp-line{display:none}
+.exp-content{padding-top:6px}
+.exp-content h4{font-size:16px;font-weight:800;margin-bottom:6px;letter-spacing:-.2px}
+.exp-content p{font-size:14px;color:var(--t2);line-height:1.7}
+.exp-content .exp-tag{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;
+  color:var(--t3);background:var(--s3);padding:3px 10px;border-radius:4px;display:inline-block;margin-top:8px}
+
+/* ===== CTA ===== */
+.cta-sec{padding:120px 40px}
+.cta-box{text-align:center;background:var(--s1);border:1px solid var(--bdr2);border-radius:var(--r3);
+  padding:80px 48px;position:relative;overflow:hidden;max-width:720px;margin:0 auto}
+.cta-box::before{content:'';position:absolute;top:-1px;left:15%;right:15%;height:3px;
+  background:linear-gradient(90deg,transparent,var(--acc),transparent)}
+.cta-stripes{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.cta-stripes>div{position:absolute;background:rgba(200,16,46,0.015);transform:rotate(-55deg);transform-origin:center}
+.cta-stripes>div:nth-child(1){width:200px;height:200%;top:-50%;left:5%}
+.cta-stripes>div:nth-child(2){width:150px;height:200%;top:-50%;left:40%}
+.cta-stripes>div:nth-child(3){width:250px;height:200%;top:-50%;left:70%}
+.cta-box h2{font-size:clamp(28px,3.5vw,42px);font-weight:900;letter-spacing:-1.2px;line-height:1.1;
+  margin-bottom:18px;position:relative}
+.cta-box p{font-size:17px;color:var(--t2);max-width:480px;margin:0 auto 8px;line-height:1.7;position:relative}
+.cta-sm{font-size:13px!important;color:var(--t3)!important;margin-top:6px}
+
+footer{text-align:center;padding:40px;border-top:1px solid var(--bdr);position:relative;z-index:1}
+.ft-logo{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;letter-spacing:3px;margin-bottom:8px;color:var(--dark)}
+.ft-slash{color:var(--acc);font-weight:300;font-size:20px}
+.ft-iq{font-size:9px;color:var(--acc);vertical-align:super;letter-spacing:1px;font-weight:800}
+footer p{font-size:12px;color:var(--t3)}
+
+.rv{opacity:0;transform:translateY(44px);transition:all .9s cubic-bezier(.16,1,.3,1)}
+.rv.vis{opacity:1;transform:translateY(0)}
+.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}.rv.d4{transition-delay:.35s}
+
+@media(max-width:960px){
+  section{padding:100px 24px}
+  .prob-grid,.eng-grid,.roi-grid{grid-template-columns:1fr}
+  .price-grid{grid-template-columns:1fr}
+  .trust-grid{grid-template-columns:1fr}
+  .tl-grid{grid-template-columns:repeat(2,1fr)}
+  .bundle-box{flex-direction:column;text-align:center}
+  nav{padding:0 20px}
+  .nav-r a:not(.nav-pill){display:none}
+}
+@media(max-width:600px){
+  .tl-grid{grid-template-columns:1fr}
+  .hero-stats{grid-template-columns:1fr}
+  .h-stat:not(:last-child)::after{display:none}
+  .h-stat:not(:last-child){border-bottom:1px solid rgba(255,255,255,0.06)}
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="stripe-bg"><div class="stripe"></div><div class="stripe"></div><div class="stripe"></div><div class="stripe"></div></div>
+<div class="top-bar"></div>
+
+<nav>
+  <div class="logo"><span class="logo-slash">/</span>ARGO<span class="logo-iq">IQ</span></div>
+  <div class="nav-r">
+    <a href="#engines">Solution</a>
+    <a href="#roi">ROI</a>
+    <a href="#pricing">Investment</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#cta" class="nav-pill">Let's Build</a>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+<div class="ctn">
+  <div class="hero-badge rv"><span class="live"></span> Prepared Exclusively for Optimal Data</div>
+  <h1 class="rv d1">You've hit your ceiling.<br><span class="gr">Let's break through it.</span></h1>
+  <p class="hero-p rv d2">You've automated more than anyone in the NetSuite data migration space. Now it's time to automate the two things still bottlenecked on you — content and segment mapping — so you can sell more and deliver more without being the constraint.</p>
+  <ul class="hero-checks rv d2">
+    <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> LinkedIn content engine — daily posts, your voice, your stories</li>
+    <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> AI-powered segment mapping — trained on your past 15 projects</li>
+    <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Human QA on everything — nothing ships without a trained eye</li>
+  </ul>
+  <div class="hero-stats rv d3">
+    <div class="h-stat"><div class="val">3–5</div><div class="lab">Clients / Month</div></div>
+    <div class="h-stat"><div class="val">$12K</div><div class="lab">Avg Deal Size</div></div>
+    <div class="h-stat"><div class="val">30<em>%</em></div><div class="lab">Close Rate</div></div>
+  </div>
+</div>
+<div class="hero-watermark">/A</div>
+<div class="scrl"><span>Scroll</span><div class="scrl-arr"></div></div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ===== PROBLEM ===== -->
+<section class="prob-section" id="problem">
+<div class="ctn">
+  <div class="prob-top rv">
+    <div class="lbl">The Bottleneck</div>
+    <div class="ttl">You are the ceiling.</div>
+    <div class="desc">You've built an incredible business — automated what nobody else would touch. But growth is now limited by two things only you can do.</div>
+  </div>
+  <div class="prob-grid">
+    <div class="pcard rv d1">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+      <h4>Content Is Brand Awareness — Not a Revenue Engine</h4>
+      <p>You post daily on LinkedIn. You've got 18 months of content queued. But there's no feedback loop — no analytics, no performance tracking, no optimization. You're posting into the void and hoping people think "NetSuite migration = Paul" when the time comes.</p>
+    </div>
+    <div class="pcard rv d2">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div>
+      <h4>Segment Mapping Still Requires Your Brain</h4>
+      <p>Your Python app gets you to 85% with fuzzy matching. But the edge cases — formatting variations, parent-child splits, multi-file entity matching — still need you. That's 10-12 hours per client that can't be delegated. Until now.</p>
+    </div>
+    <div class="pcard rv d3">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+      <h4>You're Not Generating Enough Leads</h4>
+      <p>You said it yourself: the stretch goal is more leads. At 3-5 clients/month with a $12K average deal and 30% close rate, even 2-3 more qualified leads per month from LinkedIn changes your entire revenue trajectory.</p>
+    </div>
+    <div class="pcard rv d4">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+      <h4>No SOP Means No Delegation</h4>
+      <p>Your segment map process lives in your head. Nobody else can run it because it's never been documented. Without a Six Sigma-grade SOP and trained AI skills, you'll always be the bottleneck — no matter how many people you hire.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ===== TWO ENGINES ===== -->
+<section class="eng-sec" id="engines">
+<div class="eng-bg"><div></div><div></div><div></div></div>
+<div class="ctn">
+  <div class="eng-head rv">
+    <div class="lbl">Two Engines</div>
+    <div class="ttl">One drives revenue. One unlocks capacity.</div>
+    <div class="desc">We're building two systems that solve your two biggest constraints — lead generation and delivery bandwidth.</div>
+  </div>
+
+  <div class="eng-grid">
+    <div class="eng-card rv d1">
+      <div class="eng-num">01</div>
+      <div class="eng-tag">Revenue Engine</div>
+      <h3>LinkedIn Content Machine</h3>
+      <p>Your stories, your voice, your niche — amplified with AI writing, human editing, and data-driven optimization.</p>
+      <ul class="eng-steps">
+        <li><span class="sn">1</span><strong>Story Capture:</strong> We pull from your sales calls, client wins, migration war stories, and industry insights to feed the content engine</li>
+        <li><span class="sn">2</span><strong>AI Drafting:</strong> Agent writes daily posts in your voice and style — pain points, how-tos, and narratives tuned to your ICP</li>
+        <li><span class="sn">3</span><strong>Human QA:</strong> Content editor polishes every post for quality, tone, and engagement before it hits your queue</li>
+        <li><span class="sn">4</span><strong>Performance Loop:</strong> We track what performs, analyze engagement patterns, and double down on the content types that actually drive inbound</li>
+        <li><span class="sn">5</span><strong>Engagement Workflow:</strong> DM commenters, nurture connections, and turn views into conversations that generate pipeline</li>
+      </ul>
+    </div>
+    <div class="eng-card rv d2">
+      <div class="eng-num">02</div>
+      <div class="eng-tag">Capacity Engine</div>
+      <h3>Segment Map Automation</h3>
+      <p>We document your process, build AI skills from your past 15 projects, and create an agent that handles the heavy lifting.</p>
+      <ul class="eng-steps">
+        <li><span class="sn">1</span><strong>Six Sigma SOP:</strong> Our team documents your entire segment map workflow — every decision tree, edge case, and override rule</li>
+        <li><span class="sn">2</span><strong>Training Library:</strong> We compile your past 10-15 completed map files to build an AI reference library of valid GL account, department, class, and entity mappings</li>
+        <li><span class="sn">3</span><strong>AI Agent Build:</strong> Upload an Excel file → agent proposes mappings with confidence scores → flags uncertain matches for human review</li>
+        <li><span class="sn">4</span><strong>Human QC:</strong> Our team verifies the agent's output against process SOP before it reaches you — catching process errors so you only review judgment calls</li>
+        <li><span class="sn">5</span><strong>Continuous Learning:</strong> Each completed project improves the agent's mapping accuracy. Goal: from 85% → 95%+ first-pass accuracy</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv" style="background:rgba(255,255,255,0.06)"></div>
+
+<!-- ===== ROI ===== -->
+<section class="roi-sec" id="roi">
+<div class="ctn">
+  <div class="roi-head rv">
+    <div class="lbl">The Math</div>
+    <div class="ttl">Why this makes sense.</div>
+    <div class="desc">Your numbers. Your business. Here's how we see it.</div>
+  </div>
+  <div class="roi-grid">
+    <div class="roi-card rv d1">
+      <div class="roi-label">Content Engine — The Opportunity</div>
+      <div class="roi-val green">$12K</div>
+      <div class="roi-detail">That's your average deal size. One additional closed deal from improved LinkedIn presence and engagement pays for both engines for nearly 3 months.</div>
+    </div>
+    <div class="roi-card rv d2">
+      <div class="roi-label">Segment Map — The Unlock</div>
+      <div class="roi-val green">10–12 hrs</div>
+      <div class="roi-detail">That's how long each client's mapping takes you today. Every hour we can take off your plate is an hour you can spend selling or scoping the next project.</div>
+    </div>
+    <div class="roi-card rv d3">
+      <div class="roi-label">The Real Question</div>
+      <div class="roi-val" style="color:var(--t1)">Scale</div>
+      <div class="roi-detail">You've said you've hit your max revenue number without getting other people involved. These engines are how you get past that ceiling without hiring another you.</div>
+    </div>
+    <div class="roi-card rv d4">
+      <div class="roi-label">Monthly Investment</div>
+      <div class="roi-val red">$4,500</div>
+      <div class="roi-detail">Both engines running. One generates pipeline at the top. The other frees up delivery at the bottom. Month-to-month — if it's not working, you walk.</div>
+    </div>
+  </div>
+  <div class="roi-note rv d3">We don't make revenue promises. We build systems. The results show up when the systems run.</div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ===== PRICING ===== -->
+<section class="price-sec" id="pricing">
+<div class="ctn">
+  <div class="price-head rv">
+    <div class="lbl">Investment</div>
+    <div class="ttl">Pick one. Or pick both and save.</div>
+    <div class="desc">No long-term contracts. Month-to-month. Cancel anytime. We earn your business every month.</div>
+  </div>
+  <div class="price-grid">
+    <div class="price-card rv d1">
+      <div class="price-top">
+        <div class="price-badge">Engine 01</div>
+        <div class="price-name">Content Machine</div>
+        <div class="price-desc">Daily LinkedIn posts, human QA, performance analytics, engagement workflow.</div>
+        <div class="price-amt">$2,500<span>/mo</span></div>
+        <div class="price-pct" style="color:var(--grn)">No setup fee</div>
+        <div class="price-pct">Revenue-focused · Lead generation</div>
+      </div>
+      <div class="price-feats">
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Daily posts in your voice</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> AI writing + human editing</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Performance analytics & reporting</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Engagement workflow (DMs, comments)</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Monthly content strategy review</li>
+        </ul>
+      </div>
+    </div>
+    <div class="price-card rv d2">
+      <div class="price-top">
+        <div class="price-badge">Engine 02</div>
+        <div class="price-name">Segment Map AI</div>
+        <div class="price-desc">SOP documentation, AI agent build, trained mapping skills, human QC layer.</div>
+        <div class="price-amt">$2,500<span>/mo</span></div>
+        <div class="price-pct">+ $4,500 one-time buildout</div>
+        <div class="price-pct">Capacity-focused · Delivery scale</div>
+      </div>
+      <div class="price-feats">
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Six Sigma process documentation</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> AI agent trained on your projects</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Excel upload → proposed mappings</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Human QC before handoff to you</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Continuous accuracy improvements</li>
+        </ul>
+      </div>
+    </div>
+    <div class="price-card featured rv d3">
+      <div class="price-top">
+        <div class="price-badge">Best Value</div>
+        <div class="price-name">Both Engines</div>
+        <div class="price-desc">Content + Segment Map — revenue generation and delivery capacity in one package.</div>
+        <div class="price-amt">$4,500<span>/mo</span></div>
+        <div class="price-pct">+ $4,500 one-time buildout (segment map)</div>
+        <div class="price-pct">Save $500/mo · Full system</div>
+      </div>
+      <div class="price-feats">
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Everything in Content Machine</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Everything in Segment Map AI</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Priority dev & Six Sigma team</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Bi-weekly strategy calls</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Land & expand roadmap included</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="bundle-box rv d3">
+    <div class="bundle-left">
+      <div class="lbl">Bundle & Save</div>
+      <h3>Both engines. One investment.</h3>
+      <p>More leads closing at the top. More capacity delivering at the bottom. One system that compounds.</p>
+    </div>
+    <div class="bundle-right">
+      <div class="bundle-was">$5,000/mo</div>
+      <div class="bundle-price">$4,500<span>/mo</span></div>
+      <div class="bundle-save">Save $500/mo ($6,000/yr)</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:8px">+ $4,500 one-time buildout</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ===== TRUST ===== -->
+<section class="trust-sec">
+<div class="ctn">
+  <div class="roi-head rv">
+    <div class="lbl">Why ARGO IQ</div>
+    <div class="ttl">Not another tool. A team that runs it.</div>
+  </div>
+  <div class="trust-grid">
+    <div class="trust-card rv d1">
+      <div class="trust-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <h4>Data Security First</h4>
+      <p>Your client data is sensitive — we know. No company names stored in AI training. Confidential data stays confidential. We'll build guardrails that match your risk tolerance.</p>
+    </div>
+    <div class="trust-card rv d2">
+      <div class="trust-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+      <h4>We've Done This Before</h4>
+      <p>Our founders built and sold a 2,000-person ops company. We've built content engines generating millions of views. And we've automated complex mapping workflows for other clients.</p>
+    </div>
+    <div class="trust-card rv d3">
+      <div class="trust-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+      <h4>No Contracts. Cancel Anytime.</h4>
+      <p>Month-to-month from day one. If the content isn't driving leads or the segment map agent isn't accurate, you walk. We have to earn it every month.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ===== TIMELINE ===== -->
+<section class="tl-sec" id="timeline">
+<div class="eng-bg"><div></div><div></div><div></div></div>
+<div class="ctn">
+  <div class="tl-head rv">
+    <div class="lbl">Timeline</div>
+    <div class="ttl" style="color:#fff">Content live in 2 weeks. Agent live in 6.</div>
+    <div class="desc">Content engine is the quick win. Segment map is the long-term unlock. We run them in parallel.</div>
+  </div>
+  <div class="tl-grid">
+    <div class="tl-card rv d1">
+      <div class="tl-wk">Weeks 1–2</div>
+      <h4>Content Kickoff</h4>
+      <p>Voice training on your existing posts and stories. First batch of content in your queue for review. Analytics tracking live.</p>
+    </div>
+    <div class="tl-card rv d2">
+      <div class="tl-wk">Weeks 1–3</div>
+      <h4>Six Sigma + SOP</h4>
+      <p>Deep dive with you on the segment map workflow. Full documentation. Decision trees for every edge case. Training library compiled from past projects.</p>
+    </div>
+    <div class="tl-card rv d3">
+      <div class="tl-wk">Weeks 3–5</div>
+      <h4>Agent Build & Test</h4>
+      <p>AI agent built with markdown skills. Tested against historical map files. Accuracy benchmarked. Human QC process validated.</p>
+    </div>
+    <div class="tl-card rv d4">
+      <div class="tl-wk">Week 6+</div>
+      <h4>Full System Live</h4>
+      <p>Both engines running. Content posting daily with feedback loops. Segment maps processed through the agent pipeline. You're in the sales seat.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv" style="background:rgba(255,255,255,0.06)"></div>
+
+<!-- ===== LAND & EXPAND ===== -->
+<section class="expand-sec" id="expand">
+<div class="ctn">
+  <div class="expand-head rv">
+    <div class="lbl">The Roadmap</div>
+    <div class="ttl">Start here. Grow from here.</div>
+    <div class="desc">We build in phases. Prove value first. Expand when it makes sense.</div>
+  </div>
+  <div class="expand-timeline">
+    <div class="exp-item rv d1">
+      <div class="exp-marker">
+        <div class="exp-dot active">1</div>
+        <div class="exp-line"></div>
+      </div>
+      <div class="exp-content">
+        <h4>Now — Content + Segment Map</h4>
+        <p>The two engines that directly drive revenue and unlock delivery capacity. This is where we start.</p>
+        <span class="exp-tag">$4,500/mo + $4,500 buildout</span>
+      </div>
+    </div>
+    <div class="exp-item rv d2">
+      <div class="exp-marker">
+        <div class="exp-dot">2</div>
+        <div class="exp-line"></div>
+      </div>
+      <div class="exp-content">
+        <h4>Phase 2 — Item Mapping Automation</h4>
+        <p>Once account mapping is dialed, we extend the agent to handle item mappings — the more complex phase that depends on account maps being done right.</p>
+        <span class="exp-tag">Future Add-On</span>
+      </div>
+    </div>
+    <div class="exp-item rv d3">
+      <div class="exp-marker">
+        <div class="exp-dot">3</div>
+        <div class="exp-line"></div>
+      </div>
+      <div class="exp-content">
+        <h4>Phase 3 — Admin & EA Workflows</h4>
+        <p>Email management, project coordination, client communication. AI agents handling the work Carlos and Tara do — more efficiently, with QA built in.</p>
+        <span class="exp-tag">Future Add-On</span>
+      </div>
+    </div>
+    <div class="exp-item rv d4">
+      <div class="exp-marker">
+        <div class="exp-dot">4</div>
+      </div>
+      <div class="exp-content">
+        <h4>Phase 4 — Recurring Revenue Model</h4>
+        <p>Your segment map agent becomes good enough to offer as a managed service to other NetSuite consultants. A new revenue stream built on top of what we build together.</p>
+        <span class="exp-tag">Long-Term Vision</span>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ===== CTA ===== -->
+<section class="cta-sec" id="cta">
+<div class="ctn">
+  <div class="cta-box rv">
+    <div class="cta-stripes"><div></div><div></div><div></div></div>
+    <h2>Paul — you've automated<br>everything but growth<span class="accent">.</span></h2>
+    <p>You're the tilapia of fish. Nobody wants to do what you do. That's fine — but let's make sure everyone orders your dish when data migration into NetSuite is needed.</p>
+    <p class="cta-sm">No contracts · Data security first · Month-to-month · Cancel anytime</p>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="ft-logo"><span class="ft-slash">/</span>ARGO<span class="ft-iq">IQ</span></div>
+  <p>© 2026 ARGO IQ · Confidential Proposal for Optimal Data</p>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{
+  if(el.isIntersecting)el.target.classList.add('vis')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+document.querySelectorAll('nav a').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth'})})});
+</script>
+
+</body>
+</html>
