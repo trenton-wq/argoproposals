@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARGO IQ — Bronwick Proposal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f0f0;--s1:#fff;--s2:#f7f7f7;--s3:#eee;--s4:#2a2a2a;
+  --dark:#1a1a1a;--dark2:#2a2a2a;--dark3:#333;
+  --acc:#c8102e;--acc2:#e0132f;--accDim:rgba(200,16,46,0.08);
+  --t1:#111;--t2:#555;--t3:#888;
+  --bdr:rgba(0,0,0,0.06);--bdr2:rgba(0,0,0,0.1);--bdr3:rgba(0,0,0,0.15);
+  --grn:#0a8f3c;--grn2:#0ca648;--grn3:rgba(10,143,60,0.08);
+  --r:12px;--r2:16px;--r3:20px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.018;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.stripe-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.stripe{position:absolute;background:rgba(0,0,0,0.018);transform:rotate(-55deg);transform-origin:center}
+.stripe:nth-child(1){width:300px;height:200%;top:-50%;left:10%}
+.stripe:nth-child(2){width:200px;height:200%;top:-50%;left:35%}
+.stripe:nth-child(3){width:400px;height:200%;top:-50%;left:60%}
+.stripe:nth-child(4){width:150px;height:200%;top:-50%;left:85%}
+.top-bar{position:fixed;top:0;left:0;right:0;height:4px;background:var(--acc);z-index:200}
+
+nav{position:fixed;top:4px;left:0;right:0;z-index:100;padding:0 48px;height:64px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(240,240,240,0.88);backdrop-filter:blur(24px) saturate(1.4);
+  border-bottom:1px solid var(--bdr2)}
+.logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;letter-spacing:2px;color:var(--dark);display:flex;align-items:center}
+.logo-slash{color:var(--acc);font-weight:300;font-size:22px;margin-right:1px}
+.logo-iq{font-size:9px;color:var(--acc);vertical-align:super;letter-spacing:1px;margin-left:2px;font-weight:800}
+.nav-r{display:flex;align-items:center;gap:28px}
+.nav-r a{font-size:13px;font-weight:600;color:var(--t2);text-decoration:none;letter-spacing:.5px;transition:color .25s}
+.nav-r a:hover{color:var(--t1)}
+.nav-pill{background:var(--acc)!important;color:#fff!important;padding:10px 22px;border-radius:8px;
+  font-weight:700!important;font-size:12px!important;letter-spacing:.8px!important;text-transform:uppercase;
+  transition:all .3s!important}
+.nav-pill:hover{background:var(--acc2)!important;transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,16,46,0.25)}
+
+.ctn{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+section{padding:120px 40px;position:relative}
+.lbl{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--acc);margin-bottom:16px}
+.ttl{font-size:clamp(28px,3.8vw,44px);font-weight:900;letter-spacing:-1.2px;line-height:1.12;margin-bottom:20px}
+.desc{font-size:17px;color:var(--t2);line-height:1.75;max-width:580px}
+.accent{color:var(--acc)}
+.dv{width:100%;max-width:1100px;margin:0 auto;height:1px;background:var(--bdr2);position:relative;z-index:1}
+
+/* ===== HERO ===== */
+.hero{padding:160px 40px 100px;position:relative;overflow:hidden}
+.hero-watermark{position:absolute;right:-40px;top:50%;transform:translateY(-50%);
+  font-family:'Orbitron',sans-serif;font-size:min(40vw,400px);font-weight:900;
+  color:rgba(200,16,46,0.035);line-height:1;pointer-events:none;z-index:0;letter-spacing:-10px}
+.hero-badge{display:inline-flex;align-items:center;gap:10px;padding:8px 18px;
+  background:var(--s1);border:1px solid var(--bdr2);border-radius:40px;font-size:12px;
+  font-weight:600;color:var(--t2);margin-bottom:32px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.hero-badge .live{width:8px;height:8px;background:var(--grn);border-radius:50%;
+  animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(10,143,60,0.3)}50%{opacity:.8;box-shadow:0 0 0 6px rgba(10,143,60,0)}}
+.hero h1{font-size:clamp(36px,5.2vw,62px);font-weight:900;letter-spacing:-2.5px;line-height:1.05;margin-bottom:24px}
+.hero h1 .gr{background:linear-gradient(135deg,var(--acc),#e84040);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-p{font-size:18px;color:var(--t2);line-height:1.75;max-width:540px;margin-bottom:36px}
+.hero-checks{list-style:none;display:flex;flex-direction:column;gap:14px;margin-bottom:44px}
+.hero-checks li{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;color:var(--t1)}
+.hero-checks svg{width:22px;height:22px;stroke:var(--grn);fill:none;stroke-width:2.5;flex-shrink:0;
+  background:var(--grn3);border-radius:50%;padding:4px}
+.scrl{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;
+  align-items:center;gap:8px;z-index:2}
+.scrl span{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:3px;color:var(--t3);text-transform:uppercase}
+.scrl-arr{width:1px;height:32px;background:linear-gradient(to bottom,var(--t3),transparent);
+  animation:scrollPulse 2s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:.3;height:24px}50%{opacity:1;height:36px}}
+
+/* ===== PRIORITIES ===== */
+.pri-sec{padding:120px 40px}
+.pri-top{text-align:center;margin-bottom:64px}
+.pri-top .desc{margin:0 auto}
+.pri-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.pcard{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r2);padding:36px 32px;
+  position:relative;overflow:hidden;transition:all .35s cubic-bezier(.16,1,.3,1)}
+.pcard::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--acc);
+  opacity:0;transition:opacity .35s}
+.pcard:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.06)}
+.pcard:hover::before{opacity:1}
+.pcard-ic{width:44px;height:44px;border-radius:10px;background:var(--accDim);
+  display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.pcard h4{font-size:17px;font-weight:800;margin-bottom:10px;letter-spacing:-.3px}
+.pcard p{font-size:14px;color:var(--t2);line-height:1.7}
+
+/* ===== APPROACH ===== */
+.app-sec{background:var(--dark);color:#fff;padding:120px 40px;position:relative;overflow:hidden}
+.app-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.app-bg>div{position:absolute;background:rgba(255,255,255,0.012);transform:rotate(-55deg);transform-origin:center}
+.app-bg>div:nth-child(1){width:300px;height:200%;top:-50%;left:15%}
+.app-bg>div:nth-child(2){width:200px;height:200%;top:-50%;left:45%}
+.app-bg>div:nth-child(3){width:350px;height:200%;top:-50%;left:70%}
+.app-head{text-align:center;margin-bottom:72px}
+.app-head .lbl{color:var(--acc2)}
+.app-head .ttl{color:#fff}
+.app-head .desc{color:rgba(255,255,255,0.55);margin:0 auto}
+.app-note{text-align:center;margin-top:48px;font-size:14px;color:rgba(255,255,255,0.35);font-style:italic;max-width:600px;margin-left:auto;margin-right:auto}
+
+.wf-list{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.wf-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r2);
+  padding:40px 36px;position:relative;overflow:hidden;transition:all .35s;display:flex;gap:28px}
+.wf-card:hover{background:rgba(255,255,255,0.06);transform:translateY(-3px)}
+.wf-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--acc)}
+.wf-num{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:900;color:rgba(200,16,46,0.2);line-height:1;flex-shrink:0}
+.wf-body h3{font-size:20px;font-weight:900;color:#fff;margin-bottom:10px;letter-spacing:-.4px}
+.wf-body>p{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:18px}
+.wf-measure{font-size:12px;color:var(--acc2);font-weight:600;display:flex;align-items:center;gap:8px;margin-top:14px}
+.wf-measure svg{width:14px;height:14px;stroke:var(--acc2);fill:none;stroke-width:2.5;flex-shrink:0}
+
+/* ===== START HERE ===== */
+.start-sec{padding:120px 40px}
+.start-head{text-align:center;margin-bottom:64px}
+.start-head .desc{margin:0 auto}
+.start-box{max-width:780px;margin:0 auto;background:var(--s1);border:1px solid var(--bdr2);border-radius:var(--r2);
+  overflow:hidden}
+.start-top{padding:40px 40px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:32px}
+.start-info h3{font-size:24px;font-weight:900;letter-spacing:-.5px;margin-bottom:8px}
+.start-info p{font-size:15px;color:var(--t2);line-height:1.7;max-width:400px}
+.start-price{text-align:right;flex-shrink:0}
+.start-price .sp-amt{font-family:'Orbitron',sans-serif;font-size:36px;font-weight:900;letter-spacing:-1px}
+.start-price .sp-per{font-size:14px;color:var(--t3)}
+.start-price .sp-setup{font-size:13px;color:var(--t2);margin-top:4px}
+.start-feats{padding:32px 40px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.sf{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--t2);line-height:1.55}
+.sf svg{width:18px;height:18px;stroke:var(--grn);fill:none;stroke-width:2.5;flex-shrink:0;margin-top:2px}
+.start-bottom{padding:24px 40px;background:var(--s2);border-top:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center}
+.sb-left{font-size:14px;color:var(--t2)}
+.sb-right{font-size:13px;color:var(--grn);font-weight:700}
+
+/* ===== THEN STACK ===== */
+.stack-sec{background:var(--s2);padding:100px 40px;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.stack-head{text-align:center;margin-bottom:56px}
+.stack-head .desc{margin:0 auto}
+.stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:0 auto}
+.stack-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r2);padding:32px 28px;
+  position:relative;transition:all .35s}
+.stack-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.06)}
+.stack-phase{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--acc);margin-bottom:14px;display:inline-block;
+  background:var(--accDim);padding:4px 12px;border-radius:4px}
+.stack-card h4{font-size:17px;font-weight:800;margin-bottom:10px;letter-spacing:-.3px}
+.stack-card p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:14px}
+.stack-est{font-size:12px;color:var(--t3);font-style:italic}
+
+/* ===== TRUST ===== */
+.trust-sec{padding:100px 40px}
+.trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:0 auto}
+.trust-card{text-align:center;padding:36px 28px;background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r2)}
+.trust-ic{width:52px;height:52px;border-radius:14px;background:var(--accDim);margin:0 auto 18px;
+  display:flex;align-items:center;justify-content:center}
+.trust-card h4{font-size:16px;font-weight:800;margin-bottom:8px;letter-spacing:-.2px}
+.trust-card p{font-size:13px;color:var(--t2);line-height:1.7}
+
+/* ===== CTA ===== */
+.cta-sec{padding:120px 40px}
+.cta-box{text-align:center;background:var(--s1);border:1px solid var(--bdr2);border-radius:var(--r3);
+  padding:80px 48px;position:relative;overflow:hidden;max-width:720px;margin:0 auto}
+.cta-box::before{content:'';position:absolute;top:-1px;left:15%;right:15%;height:3px;
+  background:linear-gradient(90deg,transparent,var(--acc),transparent)}
+.cta-stripes{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.cta-stripes>div{position:absolute;background:rgba(200,16,46,0.015);transform:rotate(-55deg);transform-origin:center}
+.cta-stripes>div:nth-child(1){width:200px;height:200%;top:-50%;left:5%}
+.cta-stripes>div:nth-child(2){width:150px;height:200%;top:-50%;left:40%}
+.cta-stripes>div:nth-child(3){width:250px;height:200%;top:-50%;left:70%}
+.cta-box h2{font-size:clamp(28px,3.5vw,42px);font-weight:900;letter-spacing:-1.2px;line-height:1.1;
+  margin-bottom:18px;position:relative}
+.cta-box p{font-size:17px;color:var(--t2);max-width:480px;margin:0 auto 8px;line-height:1.7;position:relative}
+.cta-sm{font-size:13px!important;color:var(--t3)!important;margin-top:6px}
+
+footer{text-align:center;padding:40px;border-top:1px solid var(--bdr);position:relative;z-index:1}
+.ft-logo{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;letter-spacing:3px;margin-bottom:8px;color:var(--dark)}
+.ft-slash{color:var(--acc);font-weight:300;font-size:20px}
+.ft-iq{font-size:9px;color:var(--acc);vertical-align:super;letter-spacing:1px;font-weight:800}
+footer p{font-size:12px;color:var(--t3)}
+
+.rv{opacity:0;transform:translateY(44px);transition:all .9s cubic-bezier(.16,1,.3,1)}
+.rv.vis{opacity:1;transform:translateY(0)}
+.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}.rv.d4{transition-delay:.35s}
+
+@media(max-width:960px){
+  section{padding:100px 24px}
+  .pri-grid,.stack-grid,.trust-grid{grid-template-columns:1fr}
+  .wf-card{flex-direction:column;gap:16px}
+  .start-top{flex-direction:column}
+  .start-feats{grid-template-columns:1fr}
+  nav{padding:0 20px}
+  .nav-r a:not(.nav-pill){display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="stripe-bg"><div class="stripe"></div><div class="stripe"></div><div class="stripe"></div><div class="stripe"></div></div>
+<div class="top-bar"></div>
+
+<nav>
+  <div class="logo"><span class="logo-slash">/</span>ARGO<span class="logo-iq">IQ</span></div>
+  <div class="nav-r">
+    <a href="#priorities">Priorities</a>
+    <a href="#approach">Approach</a>
+    <a href="#start">Investment</a>
+    <a href="#stack">Roadmap</a>
+    <a href="#cta" class="nav-pill">Let's Start</a>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+<div class="ctn">
+  <div class="hero-badge rv"><span class="live"></span> Updated Proposal for Bronwick</div>
+  <h1 class="rv d1">One workflow.<br><span class="gr">Prove it. Then stack.</span></h1>
+  <p class="hero-p rv d2">You told us to get specific. Here's what we heard: don't overcomplicate it. Start with the workflow that moves the needle most, measure it, and expand from there. No transformation projects. No new tools to learn. Just results.</p>
+  <ul class="hero-checks rv d2">
+    <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Start with one workflow, measurable from day one</li>
+    <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> AI + human oversight on everything that goes out</li>
+    <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> If we fail, you get your money back</li>
+  </ul>
+</div>
+<div class="hero-watermark">/A</div>
+<div class="scrl"><span>Scroll</span><div class="scrl-arr"></div></div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ===== PRIORITIES ===== -->
+<section class="pri-sec" id="priorities">
+<div class="ctn">
+  <div class="pri-top rv">
+    <div class="lbl">What You Told Us</div>
+    <div class="ttl">Five things that actually move the needle.</div>
+    <div class="desc">We scrapped the first proposal and rebuilt it around what you said matters. No filler. No bloat.</div>
+  </div>
+  <div class="pri-grid">
+    <div class="pcard rv d1">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <h4>Recruiters Can't Take Vacation</h4>
+      <p>When a recruiter steps away, they still feel like they have to stay "on." Candidates need updates, clients expect responsiveness. You need an AI agent under each recruiter that keeps communication, follow-ups, and status updates moving while they actually disconnect.</p>
+    </div>
+    <div class="pcard rv d2">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+      <h4>Increase Recruiter Capacity</h4>
+      <p>Each recruiter works 10-12 job orders. If AI handles the busy work (write-ups, submissions, follow-up), that capacity grows to 13-15. More capacity per recruiter means more revenue for the business and more earnings for the team. Everyone wins.</p>
+    </div>
+    <div class="pcard rv d3">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
+      <h4>Sourcing Needs to Run in the Background</h4>
+      <p>Bo's dream: an AI agent crawling boards, messaging candidates, and feeding warm responses with booked calls directly to recruiters. Not replacing sourcing, but amplifying it so the team gets qualified people reaching out to them.</p>
+    </div>
+    <div class="pcard rv d4">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+      <h4>Write-Ups Eat Recruiter Hours</h4>
+      <p>Submissions pile up fast. Recruiters spend hours each week writing them up when they should be talking to candidates. An agent trained in your team's voice could draft submissions and follow-ups, giving recruiters that time back to work more orders.</p>
+    </div>
+  </div>
+  <div style="margin-top:28px">
+    <div class="pcard rv d3" style="max-width:calc(50% - 10px)">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+      <h4>Warm Leads from Content</h4>
+      <p>You know how to close. You just need more at-bats. Content that positions Bronwick as the category leader in stone industry recruiting is the most efficient way to generate warm inbound for both candidates and clients.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ===== APPROACH ===== -->
+<section class="app-sec" id="approach">
+<div class="app-bg"><div></div><div></div><div></div></div>
+<div class="ctn">
+  <div class="app-head rv">
+    <div class="lbl">The Approach</div>
+    <div class="ttl" style="color:#fff">Brick by brick. One workflow at a time.</div>
+    <div class="desc">We start with the highest-impact workflow. Prove it works. Then stack the next one on top. Here's the order we'd recommend.</div>
+  </div>
+
+  <div class="wf-list">
+    <div class="wf-card rv d1">
+      <div class="wf-num">01</div>
+      <div class="wf-body">
+        <h3>Recruiting Agent: Submissions & Follow-Up</h3>
+        <p>We build an AI agent trained on your team's voice and style that drafts candidate submissions, write-ups, and follow-up communications. Human oversight catches anything the agent misses before it goes out. This is the workflow that frees up the most recruiter time immediately.</p>
+        <div class="wf-measure"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke-linecap="round" stroke-linejoin="round"/></svg> Measure: Hours saved per recruiter per week · Additional job orders worked</div>
+      </div>
+    </div>
+    <div class="wf-card rv d2">
+      <div class="wf-num">02</div>
+      <div class="wf-body">
+        <h3>Vacation Coverage Agent</h3>
+        <p>Now that the recruiting agent has been built, vacation coverage is ready. Each recruiter gets an AI agent that handles candidate communication, status updates, and scheduling while they're out. A part-time Argo operator monitors the agents to make sure nothing falls through. Recruiters come back to a warm pipeline instead of a cold one.</p>
+        <div class="wf-measure"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke-linecap="round" stroke-linejoin="round"/></svg> Measure: Pipeline activity maintained during time off · Candidate NPS</div>
+      </div>
+    </div>
+    <div class="wf-card rv d3">
+      <div class="wf-num">03</div>
+      <div class="wf-body">
+        <h3>Sourcing Agent</h3>
+        <p>An always-on agent that crawls job boards and candidate databases, identifies potential matches for active job orders, and sends outreach on behalf of your recruiters. Warm responses get booked directly on the recruiter's calendar. They wake up with candidates ready to talk.</p>
+        <div class="wf-measure"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke-linecap="round" stroke-linejoin="round"/></svg> Measure: Qualified candidates sourced per job order · Response rate</div>
+      </div>
+    </div>
+    <div class="wf-card rv d4">
+      <div class="wf-num">04</div>
+      <div class="wf-body">
+        <h3>Content & Social Selling Engine</h3>
+        <p>Content for Bo's personal brand plus recruiter-specific social selling for each team member. Installers see Zane talking shop floor language. Sales managers see your senior recruiters speaking their world. The team becomes visible to the people they recruit and sell to, generating warm inbound from both sides.</p>
+        <div class="wf-measure"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke-linecap="round" stroke-linejoin="round"/></svg> Measure: Warm inbound leads per month · Impressions · Engagement</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-note rv d3">Each workflow gets a Six Sigma SOP, a trained AI agent, human oversight, and clear success metrics before we move to the next one.</div>
+</div>
+</section>
+
+<div class="dv" style="background:rgba(255,255,255,0.06)"></div>
+
+<!-- ===== START HERE ===== -->
+<section class="start-sec" id="start">
+<div class="ctn">
+  <div class="start-head rv">
+    <div class="lbl">Start Here</div>
+    <div class="ttl">One workflow. Prove it. Then decide.</div>
+    <div class="desc">We recommend starting with Workflow 01, the recruiting agent for submissions and follow-up. It's the fastest time-to-value and the easiest to measure.</div>
+  </div>
+
+  <div class="start-box rv d1">
+    <div class="start-top">
+      <div class="start-info">
+        <h3>Workflow 01: Recruiting Agent</h3>
+        <p>Submissions, write-ups, and candidate follow-up. Trained on your team's voice. Human oversight on every output. Built to free up recruiter hours so they can take on more job orders.</p>
+      </div>
+      <div class="start-price">
+        <div class="sp-amt">$3,000<span style="font-size:14px;font-weight:500;color:var(--t3)">/mo</span></div>
+        <div class="sp-setup">+ $4,500 one-time buildout</div>
+      </div>
+    </div>
+    <div class="start-feats">
+      <div class="sf"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Six Sigma SOP of your recruiting workflow</div>
+      <div class="sf"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> AI agent trained on your team's voice/style</div>
+      <div class="sf"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Draft submissions & write-ups</div>
+      <div class="sf"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Candidate follow-up sequences</div>
+      <div class="sf"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Human oversight on every output</div>
+      <div class="sf"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Bi-weekly reporting & optimization</div>
+    </div>
+    <div class="start-bottom">
+      <div class="sb-left">Month-to-month · No long-term contracts · Cancel anytime</div>
+      <div class="sb-right">If we fail → full refund</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ===== THEN STACK ===== -->
+<section class="stack-sec" id="stack">
+<div class="ctn">
+  <div class="stack-head rv">
+    <div class="lbl">Then Stack</div>
+    <div class="ttl">Add workflows as we prove each one.</div>
+    <div class="desc">No bloated roadmap. Just the next logical step once we've earned it.</div>
+  </div>
+  <div class="stack-grid">
+    <div class="stack-card rv d1">
+      <div class="stack-phase">Phase 2</div>
+      <h4>Vacation Coverage Agent</h4>
+      <p>Now that the recruiting agent is proven, extend it to cover for team members when they're out. A part-time Argo operator monitors the agents. Recruiters come back to a live pipeline.</p>
+      <div class="stack-est">Est. +$2,000/mo + buildout</div>
+    </div>
+    <div class="stack-card rv d2">
+      <div class="stack-phase">Phase 3</div>
+      <h4>Sourcing Agent</h4>
+      <p>Always-on agent crawling boards, messaging candidates, booking calls on recruiter calendars. Warm leads delivered instead of cold outreach grind.</p>
+      <div class="stack-est">Est. +$2,500/mo + buildout</div>
+    </div>
+    <div class="stack-card rv d3">
+      <div class="stack-phase">Phase 4</div>
+      <h4>Content & Social Selling</h4>
+      <p>Content for Bo's personal brand plus recruiter-specific social selling for the rest of the team. Each recruiter's niche gets its own voice, from shop floor to C-suite.</p>
+      <div class="stack-est">Est. +$2,500/mo</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ===== TRUST ===== -->
+<section class="trust-sec">
+<div class="ctn">
+  <div class="app-head rv" style="margin-bottom:48px">
+    <div class="lbl">Why ARGO IQ</div>
+    <div class="ttl" style="color:var(--t1)">Not a tool. Not a transformation. A partner.</div>
+  </div>
+  <div class="trust-grid">
+    <div class="trust-card rv d1">
+      <div class="trust-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+      <h4>We've Built Recruiting Ops Before</h4>
+      <p>Our founders built and sold a 2,000-person staffing and ops company. We understand recruiting workflows, candidate management, and how to scale without breaking what works.</p>
+    </div>
+    <div class="trust-card rv d2">
+      <div class="trust-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <h4>Money-Back Guarantee</h4>
+      <p>If the first workflow doesn't deliver measurable results, you get a full refund. We carry the risk because we're confident in what we build.</p>
+    </div>
+    <div class="trust-card rv d3">
+      <div class="trust-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+      <h4>We Know Scott. Scott Knows You.</h4>
+      <p>This isn't a cold vendor relationship. Scott understands your business, your team, and your vision. That context is baked into everything we build.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- ===== CTA ===== -->
+<section class="cta-sec" id="cta">
+<div class="ctn">
+  <div class="cta-box rv">
+    <div class="cta-stripes"><div></div><div></div><div></div></div>
+    <h2>Bo, let's start<br>with one workflow<span class="accent">.</span></h2>
+    <p>You said brick by brick. We heard you. Pick the first brick and let's prove it works before we talk about the wall.</p>
+    <p class="cta-sm">Month-to-month · Money-back guarantee · One workflow at a time</p>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="ft-logo"><span class="ft-slash">/</span>ARGO<span class="ft-iq">IQ</span></div>
+  <p>© 2026 ARGO IQ · Confidential Proposal for Bronwick</p>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{
+  if(el.isIntersecting)el.target.classList.add('vis')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+document.querySelectorAll('nav a').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth'})})});
+</script>
+
+</body>
+</html>
