@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARGO IQ Proposal for Steven Byers</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f0f0;--s1:#fff;--s2:#f7f7f7;--s3:#eee;
+  --dark:#1a1a1a;--dark2:#2a2a2a;
+  --acc:#c8102e;--acc2:#e0132f;--accDim:rgba(200,16,46,0.08);
+  --t1:#111;--t2:#555;--t3:#888;
+  --bdr:rgba(0,0,0,0.06);--bdr2:rgba(0,0,0,0.1);
+  --grn:#0a8f3c;--grn2:#0ca648;--grn3:rgba(10,143,60,0.08);
+  --r2:16px;--r3:20px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
+.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.018;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.stripe-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.stripe{position:absolute;background:rgba(0,0,0,0.018);transform:rotate(-55deg);transform-origin:center}
+.stripe:nth-child(1){width:300px;height:200%;top:-50%;left:10%}
+.stripe:nth-child(2){width:200px;height:200%;top:-50%;left:35%}
+.stripe:nth-child(3){width:400px;height:200%;top:-50%;left:60%}
+.stripe:nth-child(4){width:150px;height:200%;top:-50%;left:85%}
+.top-bar{position:fixed;top:0;left:0;right:0;height:4px;background:var(--acc);z-index:200}
+
+nav{position:fixed;top:4px;left:0;right:0;z-index:100;padding:0 48px;height:64px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(240,240,240,0.88);backdrop-filter:blur(24px) saturate(1.4);
+  border-bottom:1px solid var(--bdr2)}
+.logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;letter-spacing:2px;color:var(--dark);display:flex;align-items:center}
+.logo-slash{color:var(--acc);font-weight:300;font-size:22px;margin-right:1px}
+.logo-iq{font-size:9px;color:var(--acc);vertical-align:super;letter-spacing:1px;margin-left:2px;font-weight:800}
+.nav-r{display:flex;align-items:center;gap:28px}
+.nav-r a{font-size:13px;font-weight:600;color:var(--t2);text-decoration:none;letter-spacing:.5px;transition:color .25s}
+.nav-r a:hover{color:var(--t1)}
+.nav-pill{background:var(--acc)!important;color:#fff!important;padding:10px 22px;border-radius:8px;
+  font-weight:700!important;font-size:12px!important;letter-spacing:.8px!important;text-transform:uppercase;transition:all .3s!important}
+.nav-pill:hover{background:var(--acc2)!important;transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,16,46,0.25)}
+
+.ctn{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+section{padding:120px 40px;position:relative}
+.lbl{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--acc);margin-bottom:16px}
+.ttl{font-size:clamp(28px,3.8vw,44px);font-weight:900;letter-spacing:-1.2px;line-height:1.12;margin-bottom:20px}
+.desc{font-size:17px;color:var(--t2);line-height:1.75;max-width:580px}
+.accent{color:var(--acc)}
+.dv{width:100%;max-width:1100px;margin:0 auto;height:1px;background:var(--bdr2);position:relative;z-index:1}
+
+/* HERO */
+.hero{padding:160px 40px 100px;position:relative;overflow:hidden}
+.hero-wm{position:absolute;right:-40px;top:50%;transform:translateY(-50%);font-family:'Orbitron',sans-serif;font-size:min(40vw,400px);font-weight:900;color:rgba(200,16,46,0.035);line-height:1;pointer-events:none;z-index:0;letter-spacing:-10px}
+.hero-badge{display:inline-flex;align-items:center;gap:10px;padding:8px 18px;background:var(--s1);border:1px solid var(--bdr2);border-radius:40px;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:32px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.hero-badge .live{width:8px;height:8px;background:var(--grn);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(10,143,60,0.3)}50%{opacity:.8;box-shadow:0 0 0 6px rgba(10,143,60,0)}}
+.hero h1{font-size:clamp(36px,5.2vw,62px);font-weight:900;letter-spacing:-2.5px;line-height:1.05;margin-bottom:24px}
+.hero h1 .gr{background:linear-gradient(135deg,var(--acc),#e84040);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-p{font-size:18px;color:var(--t2);line-height:1.75;max-width:540px;margin-bottom:36px}
+.hero-checks{list-style:none;display:flex;flex-direction:column;gap:14px;margin-bottom:44px}
+.hero-checks li{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;color:var(--t1)}
+.hero-checks svg{width:22px;height:22px;stroke:var(--grn);fill:none;stroke-width:2.5;flex-shrink:0;background:var(--grn3);border-radius:50%;padding:4px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:var(--dark);border-radius:16px;overflow:hidden;max-width:540px;box-shadow:0 12px 40px rgba(0,0,0,0.12)}
+.h-stat{padding:28px 24px;text-align:center;position:relative}
+.h-stat:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;bottom:20%;width:1px;background:rgba(255,255,255,0.08)}
+.h-stat .val{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:6px}
+.h-stat .val em{font-style:normal;font-size:18px;color:var(--acc)}
+.h-stat .lab{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:.5px;font-weight:500}
+.scrl{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:2}
+.scrl span{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:3px;color:var(--t3);text-transform:uppercase}
+.scrl-arr{width:1px;height:32px;background:linear-gradient(to bottom,var(--t3),transparent);animation:sp 2s ease-in-out infinite}
+@keyframes sp{0%,100%{opacity:.3;height:24px}50%{opacity:1;height:36px}}
+
+/* CARDS */
+.pcard{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r2);padding:36px 32px;position:relative;overflow:hidden;transition:all .35s cubic-bezier(.16,1,.3,1)}
+.pcard::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--acc);opacity:0;transition:opacity .35s}
+.pcard:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.06)}
+.pcard:hover::before{opacity:1}
+.pcard-ic{width:44px;height:44px;border-radius:10px;background:var(--accDim);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.pcard h4{font-size:17px;font-weight:800;margin-bottom:10px;letter-spacing:-.3px}
+.pcard p{font-size:14px;color:var(--t2);line-height:1.7}
+
+/* DARK SECTION */
+.dk{background:var(--dark);color:#fff;position:relative;overflow:hidden}
+.dk-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.dk-bg>div{position:absolute;background:rgba(255,255,255,0.012);transform:rotate(-55deg);transform-origin:center}
+.dk-bg>div:nth-child(1){width:300px;height:200%;top:-50%;left:15%}
+.dk-bg>div:nth-child(2){width:200px;height:200%;top:-50%;left:45%}
+.dk-bg>div:nth-child(3){width:350px;height:200%;top:-50%;left:70%}
+.dk-head{text-align:center;margin-bottom:72px}
+.dk-head .lbl{color:var(--acc2)}
+.dk-head .ttl{color:#fff}
+.dk-head .desc{color:rgba(255,255,255,0.55);margin:0 auto}
+
+/* WORKFLOW CARDS */
+.wf-list{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.wf-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r2);padding:40px 36px;display:flex;gap:28px;position:relative;overflow:hidden;transition:all .35s}
+.wf-card:hover{background:rgba(255,255,255,0.06);transform:translateY(-3px)}
+.wf-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--acc)}
+.wf-num{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:900;color:rgba(200,16,46,0.2);line-height:1;flex-shrink:0}
+.wf-body h3{font-size:20px;font-weight:900;color:#fff;margin-bottom:10px;letter-spacing:-.4px}
+.wf-body>p{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:14px}
+.wf-tags{display:flex;flex-wrap:wrap;gap:8px}
+.wf-tag{font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.06);padding:5px 12px;border-radius:6px;letter-spacing:.3px}
+.wf-note{text-align:center;margin-top:48px;font-size:14px;color:rgba(255,255,255,0.35);font-style:italic;max-width:600px;margin-left:auto;margin-right:auto}
+
+/* PRICING */
+.price-sec{background:var(--s2);padding:120px 40px;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.price-head{text-align:center;margin-bottom:64px}
+.price-head .desc{margin:0 auto}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto}
+.price-card{background:var(--s1);border:1px solid var(--bdr2);border-radius:var(--r2);overflow:hidden;position:relative;transition:all .35s cubic-bezier(.16,1,.3,1)}
+.price-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.06)}
+.price-card.feat{border-color:var(--acc);box-shadow:0 8px 32px rgba(200,16,46,0.08)}
+.price-card.feat::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--acc)}
+.price-top{padding:32px 28px 20px}
+.price-badge{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--acc);margin-bottom:10px;display:inline-block;background:var(--accDim);padding:5px 14px;border-radius:5px}
+.price-name{font-size:20px;font-weight:900;letter-spacing:-.5px;margin-bottom:6px}
+.price-desc{font-size:13px;color:var(--t3);margin-bottom:18px;line-height:1.6}
+.price-amt{font-family:'Orbitron',sans-serif;font-size:32px;font-weight:900;letter-spacing:-1px}
+.price-amt span{font-size:14px;font-weight:500;color:var(--t3);letter-spacing:0}
+.price-pct{font-size:12px;color:var(--t3);margin-top:4px}
+.price-feats{padding:18px 28px 28px;border-top:1px solid var(--bdr)}
+.price-feats ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+.price-feats li{font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:10px;line-height:1.55}
+.price-feats li svg{width:18px;height:18px;stroke:var(--grn);fill:none;stroke-width:2.5;flex-shrink:0;margin-top:2px}
+
+.bundle-box{max-width:960px;margin:32px auto 0;background:var(--dark);border-radius:var(--r2);padding:36px 40px;display:flex;align-items:center;justify-content:space-between;gap:32px}
+.bundle-left{flex:1}
+.bundle-left .lbl{color:var(--acc2);margin-bottom:8px}
+.bundle-left h3{font-size:24px;font-weight:900;color:#fff;letter-spacing:-.5px;margin-bottom:8px}
+.bundle-left p{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.7}
+.bundle-right{text-align:center;flex-shrink:0}
+.bundle-price{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:900;color:#fff;letter-spacing:-1px}
+.bundle-price span{font-size:16px;font-weight:500;color:rgba(255,255,255,0.45);letter-spacing:0}
+.bundle-save{font-size:12px;color:var(--grn2);font-weight:600;margin-top:4px}
+.bundle-was{font-size:12px;color:rgba(255,255,255,0.35);text-decoration:line-through;margin-top:2px}
+.bundle-setup{font-size:12px;color:rgba(255,255,255,0.4);margin-top:8px}
+
+/* TIMELINE */
+.tl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:960px;margin:0 auto}
+.tl-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r2);padding:32px 24px;position:relative;transition:all .35s}
+.tl-card:hover{background:rgba(255,255,255,0.06);transform:translateY(-3px)}
+.tl-wk{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--acc2);margin-bottom:14px}
+.tl-card h4{font-size:16px;font-weight:800;margin-bottom:10px;color:#fff;letter-spacing:-.2px}
+.tl-card p{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.7}
+
+/* TRUST */
+.trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:0 auto}
+.trust-card{text-align:center;padding:36px 28px;background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r2)}
+.trust-ic{width:52px;height:52px;border-radius:14px;background:var(--accDim);margin:0 auto 18px;display:flex;align-items:center;justify-content:center}
+.trust-card h4{font-size:16px;font-weight:800;margin-bottom:8px;letter-spacing:-.2px}
+.trust-card p{font-size:13px;color:var(--t2);line-height:1.7}
+
+/* CTA */
+.cta-sec{padding:120px 40px}
+.cta-box{text-align:center;background:var(--s1);border:1px solid var(--bdr2);border-radius:var(--r3);padding:80px 48px;position:relative;overflow:hidden;max-width:720px;margin:0 auto}
+.cta-box::before{content:'';position:absolute;top:-1px;left:15%;right:15%;height:3px;background:linear-gradient(90deg,transparent,var(--acc),transparent)}
+.cta-stripes{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.cta-stripes>div{position:absolute;background:rgba(200,16,46,0.015);transform:rotate(-55deg);transform-origin:center}
+.cta-stripes>div:nth-child(1){width:200px;height:200%;top:-50%;left:5%}
+.cta-stripes>div:nth-child(2){width:150px;height:200%;top:-50%;left:40%}
+.cta-stripes>div:nth-child(3){width:250px;height:200%;top:-50%;left:70%}
+.cta-box h2{font-size:clamp(28px,3.5vw,42px);font-weight:900;letter-spacing:-1.2px;line-height:1.1;margin-bottom:18px;position:relative}
+.cta-box p{font-size:17px;color:var(--t2);max-width:480px;margin:0 auto 8px;line-height:1.7;position:relative}
+.cta-sm{font-size:13px!important;color:var(--t3)!important;margin-top:6px}
+
+footer{text-align:center;padding:40px;border-top:1px solid var(--bdr);position:relative;z-index:1}
+.ft-logo{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;letter-spacing:3px;margin-bottom:8px;color:var(--dark)}
+.ft-slash{color:var(--acc);font-weight:300;font-size:20px}
+.ft-iq{font-size:9px;color:var(--acc);vertical-align:super;letter-spacing:1px;font-weight:800}
+footer p{font-size:12px;color:var(--t3)}
+
+.rv{opacity:0;transform:translateY(44px);transition:all .9s cubic-bezier(.16,1,.3,1)}
+.rv.vis{opacity:1;transform:translateY(0)}
+.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}.rv.d4{transition-delay:.35s}
+
+@media(max-width:960px){
+  section{padding:100px 24px}
+  .hero-stats{grid-template-columns:1fr}
+  .h-stat:not(:last-child)::after{display:none}
+  .h-stat:not(:last-child){border-bottom:1px solid rgba(255,255,255,0.06)}
+  .price-grid,.trust-grid{grid-template-columns:1fr}
+  .tl-grid{grid-template-columns:repeat(2,1fr)}
+  .wf-card{flex-direction:column;gap:16px}
+  .bundle-box{flex-direction:column;text-align:center}
+  nav{padding:0 20px}
+  .nav-r a:not(.nav-pill){display:none}
+}
+@media(max-width:600px){.tl-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="stripe-bg"><div class="stripe"></div><div class="stripe"></div><div class="stripe"></div><div class="stripe"></div></div>
+<div class="top-bar"></div>
+
+<nav>
+  <div class="logo"><span class="logo-slash">/</span>ARGO<span class="logo-iq">IQ</span></div>
+  <div class="nav-r">
+    <a href="#problem">The Pain</a>
+    <a href="#approach">Approach</a>
+    <a href="#pricing">Investment</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#cta" class="nav-pill">Let's Start</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="ctn">
+  <div class="hero-badge rv"><span class="live"></span> Prepared for Steven Byers</div>
+  <h1 class="rv d1">You built this business.<br><span class="gr">Stop running it from your texts.</span></h1>
+  <p class="hero-p rv d2">You manage 600+ doors, coordinate a dozen vendors, and handle every client relationship personally. That's what makes your company special. But right now you're the central brain for everything, and that's keeping you from the Galapagos, Spain, and everywhere else you've earned the right to be.</p>
+  <ul class="hero-checks rv d2">
+    <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Utility bill management off your best employee's plate</li>
+    <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Vendor coordination that doesn't run through your phone</li>
+    <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Client coverage so you never send an out-of-office again</li>
+  </ul>
+  <div class="hero-stats rv d3">
+    <div class="h-stat"><div class="val">600<em>+</em></div><div class="lab">Doors Managed</div></div>
+    <div class="h-stat"><div class="val">~100</div><div class="lab">Utility Bills / Month</div></div>
+    <div class="h-stat"><div class="val">6-7</div><div class="lab">Team Members</div></div>
+  </div>
+</div>
+<div class="hero-wm">/A</div>
+<div class="scrl"><span>Scroll</span><div class="scrl-arr"></div></div>
+</section>
+
+<div class="dv"></div>
+
+<!-- PROBLEM -->
+<section style="padding:120px 40px" id="problem">
+<div class="ctn">
+  <div style="text-align:center;margin-bottom:64px" class="rv">
+    <div class="lbl">What We Heard</div>
+    <div class="ttl">Three things eating your bandwidth.</div>
+    <div class="desc" style="margin:0 auto">You told us exactly where it hurts. Here's what we're going to fix, starting with the simplest and stacking from there.</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+    <div class="pcard rv d1">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M13 2v7h7"/></svg></div>
+      <h4>100 Utility Bills a Month</h4>
+      <p>Turning accounts on and off, tracking what's active, catching past-dues before they become problems. Your best employee spends 20+ hours a month on this when she should be running your office and talking to clients.</p>
+    </div>
+    <div class="pcard rv d2">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+      <h4>You're the Hub for Everything</h4>
+      <p>Field guys text you. Vendors need approvals. Estimates need to be compiled. Someone needs to follow up with the roofer, the cabinet guy, the plumber. Right now that someone is always you, and it eats 90% of your day.</p>
+    </div>
+    <div class="pcard rv d3">
+      <div class="pcard-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+      <h4>Clients Only Know You</h4>
+      <p>Your clients are imprinted on you and John. That's your competitive advantage, but it means every vacation comes with an out-of-office reply and a knot in your stomach. You want someone who can respond in your voice, handle requests, and keep the relationship warm while you're gone.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- APPROACH -->
+<section class="dk" style="padding:120px 40px" id="approach">
+<div class="dk-bg"><div></div><div></div><div></div></div>
+<div class="ctn">
+  <div class="dk-head rv">
+    <div class="lbl">The Approach</div>
+    <div class="ttl" style="color:#fff">Bite-size it. Start simple. Stack as we go.</div>
+    <div class="desc">You said it best: bite-size it. We start with the most systematic workflow, prove it works, and build from there. No big-bang transformation.</div>
+  </div>
+
+  <div class="wf-list">
+    <div class="wf-card rv d1">
+      <div class="wf-num">01</div>
+      <div class="wf-body">
+        <h3>Utility Bill Management</h3>
+        <p>We take over the full lifecycle: tracking which accounts should be on, which should be off, monitoring for incoming bills (email and mail), paying on time, and flagging anything unusual. Your Microsoft Lists become the source of truth. Your licensed agent gets 20+ hours a month back.</p>
+        <div class="wf-tags">
+          <span class="wf-tag">On/off tracking</span>
+          <span class="wf-tag">Bill monitoring</span>
+          <span class="wf-tag">Payment processing</span>
+          <span class="wf-tag">Past-due prevention</span>
+          <span class="wf-tag">Microsoft Lists integration</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-card rv d2">
+      <div class="wf-num">02</div>
+      <div class="wf-body">
+        <h3>Project Management and Vendor Coordination</h3>
+        <p>A dedicated Argo operator becomes your central brain. Field texts, vendor scopes, estimates, approvals, scheduling. Everything flows through one person instead of your phone. They manage your Microsoft Lists, coordinate vendors, compile estimates, and chase follow-ups so your day isn't spent firefighting.</p>
+        <div class="wf-tags">
+          <span class="wf-tag">Vendor coordination</span>
+          <span class="wf-tag">Field communication hub</span>
+          <span class="wf-tag">Estimate compilation</span>
+          <span class="wf-tag">Approval tracking</span>
+          <span class="wf-tag">Microsoft Lists/Boards</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-card rv d3">
+      <div class="wf-num">03</div>
+      <div class="wf-body">
+        <h3>Client Communication Coverage</h3>
+        <p>Never send an out-of-office reply again. When you're traveling, an Argo operator trained in your communication style handles client requests, pulls documents, schedules follow-up meetings, and keeps the personal touch that separates your firm from every other management company. "Hey Larry, we got that. Steven's traveling, here are the documents you asked for. Want to meet with him Tuesday?"</p>
+        <div class="wf-tags">
+          <span class="wf-tag">Vacation coverage</span>
+          <span class="wf-tag">Client email response</span>
+          <span class="wf-tag">Document retrieval</span>
+          <span class="wf-tag">Meeting scheduling</span>
+          <span class="wf-tag">Voice-matched communication</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wf-note rv d3">Each workflow starts with a Six Sigma documentation process. We map every step, automate what we can, and staff human oversight on top.</div>
+</div>
+</section>
+
+<div class="dv" style="background:rgba(255,255,255,0.06)"></div>
+
+<!-- PRICING -->
+<section class="price-sec" id="pricing">
+<div class="ctn">
+  <div class="price-head rv">
+    <div class="lbl">Investment</div>
+    <div class="ttl">Start with one. Add as we earn it.</div>
+    <div class="desc" style="margin:0 auto">Month-to-month on everything. No long-term contracts. Opt out anytime if we're not delivering.</div>
+  </div>
+  <div class="price-grid">
+    <div class="price-card rv d1">
+      <div class="price-top">
+        <div class="price-badge">Start Here</div>
+        <div class="price-name">Utility Management</div>
+        <div class="price-desc">Full lifecycle utility bill tracking, payment, and on/off management across all properties.</div>
+        <div class="price-amt">$2,000<span>/mo</span></div>
+        <div class="price-pct">+ $2,500 one-time setup</div>
+        <div class="price-pct">Lowest complexity, highest immediate impact</div>
+      </div>
+      <div class="price-feats">
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Six Sigma SOP of current process</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Automation of tracking and alerts</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> On/off management across accounts</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Payment processing and past-due prevention</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Microsoft Lists integration</li>
+        </ul>
+      </div>
+    </div>
+    <div class="price-card rv d2">
+      <div class="price-top">
+        <div class="price-badge">Phase 2</div>
+        <div class="price-name">Project Manager</div>
+        <div class="price-desc">Dedicated Argo operator handling vendor coordination, field communication, and estimate compilation.</div>
+        <div class="price-amt">$3,500<span>/mo</span></div>
+        <div class="price-pct">+ $4,500 one-time buildout</div>
+        <div class="price-pct">Higher complexity, dedicated operator</div>
+      </div>
+      <div class="price-feats">
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Six Sigma workflow documentation</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Central hub for all field communication</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Vendor scoping, scheduling, follow-up</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Estimate compilation and approval tracking</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Microsoft Lists/Boards management</li>
+        </ul>
+      </div>
+    </div>
+    <div class="price-card rv d3">
+      <div class="price-top">
+        <div class="price-badge">Phase 3</div>
+        <div class="price-name">Client Coverage</div>
+        <div class="price-desc">Voice-matched client communication during travel and overflow periods. No more out-of-office.</div>
+        <div class="price-amt">$3,000<span>/mo</span></div>
+        <div class="price-pct">+ $4,500 one-time buildout</div>
+        <div class="price-pct">High-touch, relationship-critical</div>
+      </div>
+      <div class="price-feats">
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Communication style training</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Client email response in your voice</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Document retrieval and delivery</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Meeting scheduling and follow-up</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Seamless handoff when you return</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="bundle-box rv d3">
+    <div class="bundle-left">
+      <div class="lbl">All Three Workflows</div>
+      <h3>Full back office. One partner.</h3>
+      <p>Utilities managed. Vendors coordinated. Clients covered. You focus on growing the business and living the life you built it for.</p>
+    </div>
+    <div class="bundle-right">
+      <div class="bundle-was">$8,500/mo</div>
+      <div class="bundle-price">$7,500<span>/mo</span></div>
+      <div class="bundle-save">Save $1,000/mo ($12,000/yr)</div>
+      <div class="bundle-setup">+ $9,500 combined buildout (save $2,000)</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- TIMELINE -->
+<section class="dk" style="padding:120px 40px" id="timeline">
+<div class="dk-bg"><div></div><div></div><div></div></div>
+<div class="ctn">
+  <div class="dk-head rv">
+    <div class="lbl">Timeline</div>
+    <div class="ttl" style="color:#fff">Utilities live in 3 weeks. Everything running in 90 days.</div>
+    <div class="desc">We start with utility management because it's the most systematic. Once that's running clean, we layer in project management and client coverage.</div>
+  </div>
+  <div class="tl-grid">
+    <div class="tl-card rv d1">
+      <div class="tl-wk">Weeks 1-2</div>
+      <h4>Map the Process</h4>
+      <p>Six Sigma documentation of your utility workflow. We sit with your team, learn every step, and build the SOP. Parallel: audit all active accounts against your Microsoft Lists.</p>
+    </div>
+    <div class="tl-card rv d2">
+      <div class="tl-wk">Week 3</div>
+      <h4>Utilities Live</h4>
+      <p>Argo takes over utility management. Your licensed agent gets 20+ hours back immediately. Monitoring, payment, on/off tracking all running through our team.</p>
+    </div>
+    <div class="tl-card rv d3">
+      <div class="tl-wk">Weeks 4-6</div>
+      <h4>Project Management Build</h4>
+      <p>Deep dive into your vendor coordination and field communication workflows. SOP creation, tool assessment, and Argo operator onboarding for the PM role.</p>
+    </div>
+    <div class="tl-card rv d4">
+      <div class="tl-wk">Weeks 7-12</div>
+      <h4>Full System Live</h4>
+      <p>Client communication coverage layered in. All three workflows running. You travel without your phone buzzing every 10 minutes.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv" style="background:rgba(255,255,255,0.06)"></div>
+
+<!-- TRUST -->
+<section style="padding:100px 40px">
+<div class="ctn">
+  <div style="text-align:center;margin-bottom:48px" class="rv">
+    <div class="lbl">Why Argo IQ</div>
+    <div class="ttl">We've done this for companies like yours.</div>
+  </div>
+  <div class="trust-grid">
+    <div class="trust-card rv d1">
+      <div class="trust-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+      <h4>Property Management Experience</h4>
+      <p>We're already working with real estate groups managing similar door counts. We understand the tools, the vendor relationships, and the constant communication that comes with the territory.</p>
+    </div>
+    <div class="trust-card rv d2">
+      <div class="trust-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+      <h4>2,000-Person Ops Track Record</h4>
+      <p>Our founders built and sold a staffing and operations company with 2,000+ employees. We know how to document processes, staff the right people, and keep things running without the founder being the bottleneck.</p>
+    </div>
+    <div class="trust-card rv d3">
+      <div class="trust-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <h4>Month-to-Month. Always.</h4>
+      <p>No long-term contracts. No lock-ins. If we're not delivering, you walk. We carry the risk because we're confident in what we build.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="dv"></div>
+
+<!-- CTA -->
+<section class="cta-sec" id="cta">
+<div class="ctn">
+  <div class="cta-box rv">
+    <div class="cta-stripes"><div></div><div></div><div></div></div>
+    <h2>Steven, go to the Galapagos<span class="accent">.</span><br>We've got the back office.</h2>
+    <p>You built a business that lets you travel the world. Let's make sure it actually runs while you're gone.</p>
+    <p class="cta-sm">Month-to-month, no contracts, opt out anytime</p>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="ft-logo"><span class="ft-slash">/</span>ARGO<span class="ft-iq">IQ</span></div>
+  <p>&copy; 2026 ARGO IQ &middot; Confidential Proposal for Steven Byers</p>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{
+  if(el.isIntersecting)el.target.classList.add('vis')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+document.querySelectorAll('nav a').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth'})})});
+</script>
+
+</body>
+</html>
