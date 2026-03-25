@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argo IQ x Moummar Nawafleh — Content Engine Proposal</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #c8102e;
+    --red-dark: #a00d24;
+    --bg: #f0f0f0;
+    --white: #ffffff;
+    --dark: #1a1a1a;
+    --dark-2: #242424;
+    --gray: #888888;
+    --gray-light: #d8d8d8;
+    --text: #1a1a1a;
+    --text-muted: #666666;
+    --card-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    --card-shadow-hover: 0 8px 40px rgba(0,0,0,0.14);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(26,26,26,0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 56px;
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .nav-logo span { color: var(--red); }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--red); }
+
+  /* RED TOP BAR */
+  .red-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--red);
+    z-index: 200;
+  }
+
+  /* SECTIONS */
+  section { padding: 100px 0; }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* REVEAL ANIMATION */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* LABEL */
+  .label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .label::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--red);
+  }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(24px, 3.5vw, 36px);
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--dark);
+    margin-bottom: 16px;
+  }
+
+  .section-title.light { color: var(--white); }
+
+  .section-sub {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--text-muted);
+    max-width: 620px;
+    margin-bottom: 56px;
+  }
+
+  .section-sub.light { color: rgba(255,255,255,0.65); }
+
+  /* DIAGONAL STRIPE ACCENT */
+  .stripe-accent {
+    position: absolute;
+    width: 120px;
+    height: 100%;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 4px,
+      rgba(200,16,46,0.08) 4px,
+      rgba(200,16,46,0.08) 8px
+    );
+  }
+
+  /* ===================== HERO ===================== */
+  #hero {
+    padding-top: 56px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,16,46,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,16,46,0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-bg-glow {
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(200,16,46,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-diagonal {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 40%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 6px,
+      rgba(200,16,46,0.04) 6px,
+      rgba(200,16,46,0.04) 12px
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 80px;
+    align-items: center;
+    width: 100%;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(200,16,46,0.15);
+    border: 1px solid rgba(200,16,46,0.3);
+    border-radius: 2px;
+    padding: 6px 14px;
+    margin-bottom: 28px;
+  }
+
+  .hero-badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero-badge-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+
+  .hero-headline {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(32px, 5vw, 58px);
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    margin-bottom: 24px;
+  }
+
+  .hero-headline em {
+    font-style: normal;
+    color: var(--red);
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.6);
+    max-width: 520px;
+    margin-bottom: 40px;
+  }
+
+  .hero-checks {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .hero-check {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+  }
+
+  .check-icon {
+    width: 20px; height: 20px;
+    background: var(--red);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .check-icon svg { width: 11px; height: 11px; }
+
+  /* STATS BAR */
+  .hero-stats {
+    display: flex;
+    gap: 0;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .stat-item {
+    flex: 1;
+    padding: 20px 24px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: transparent;
+    transition: background 0.3s;
+  }
+
+  .stat-item:hover::before { background: var(--red); }
+
+  .stat-val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--white);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* HERO SIDE CARD */
+  .hero-side {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 240px;
+  }
+
+  .hero-tag {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 16px 20px;
+    text-align: center;
+  }
+
+  .hero-tag-val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--red);
+    display: block;
+  }
+
+  .hero-tag-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    display: block;
+    margin-top: 4px;
+  }
+
+  .hero-for {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    text-align: center;
+    padding: 8px 0;
+  }
+
+  .hero-name-card {
+    background: var(--red);
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .hero-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    display: block;
+  }
+
+  .hero-company {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* ===================== WHAT WE HEARD ===================== */
+  #heard {
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #heard::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--red) 0%, transparent 60%);
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: 4px;
+    padding: 32px;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+
+  .card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-3px);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--red);
+  }
+
+  .card-number {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: rgba(200,16,46,0.08);
+    line-height: 1;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .card-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 12px;
+  }
+
+  .card-text {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
+
+  /* ===================== SOLUTION ===================== */
+  #solution {
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .solution-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .solution-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .solution-card:hover {
+    border-color: rgba(200,16,46,0.4);
+    background: rgba(255,255,255,0.06);
+  }
+
+  .solution-card.featured {
+    border-color: var(--red);
+    background: rgba(200,16,46,0.06);
+    grid-column: span 2;
+  }
+
+  .solution-card-icon {
+    width: 44px; height: 44px;
+    background: var(--red);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .solution-card-icon svg { width: 22px; height: 22px; }
+
+  .solution-card-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .solution-card-text {
+    font-size: 15px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .solution-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .solution-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .step-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--red);
+    background: rgba(200,16,46,0.15);
+    border-radius: 2px;
+    width: 24px; height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-text {
+    font-size: 14px;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .step-text strong {
+    color: rgba(255,255,255,0.9);
+    font-weight: 600;
+  }
+
+  /* PIPELINE VISUAL */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 40px 0 0;
+    overflow-x: auto;
+  }
+
+  .pipe-node {
+    flex: 1;
+    min-width: 130px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 16px 14px;
+    text-align: center;
+    position: relative;
+  }
+
+  .pipe-node::after {
+    content: '→';
+    position: absolute;
+    right: -18px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--red);
+    z-index: 2;
+    font-weight: 700;
+  }
+
+  .pipe-node:last-child::after { display: none; }
+
+  .pipe-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .pipe-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* ===================== ROI ===================== */
+  #roi {
+    background: var(--bg);
+  }
+
+  .roi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .roi-card {
+    background: var(--white);
+    border-radius: 4px;
+    padding: 36px;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .roi-card.dark-card {
+    background: var(--dark);
+    color: var(--white);
+  }
+
+  .roi-number {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--red);
+    line-height: 1;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .roi-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .roi-card.dark-card .roi-label { color: rgba(255,255,255,0.4); }
+
+  .roi-text {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
+
+  .roi-card.dark-card .roi-text { color: rgba(255,255,255,0.6); }
+
+  .roi-disclaimer {
+    margin-top: 32px;
+    padding: 20px 24px;
+    background: rgba(200,16,46,0.05);
+    border: 1px solid rgba(200,16,46,0.15);
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* ===================== PRICING ===================== */
+  #pricing {
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pricing-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .pricing-header {
+    background: var(--red);
+    padding: 32px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .pricing-plan-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.8);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .pricing-plan-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--white);
+  }
+
+  .pricing-price {
+    text-align: right;
+  }
+
+  .pricing-amount {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 44px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+    display: block;
+  }
+
+  .pricing-period {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    display: block;
+    margin-top: 4px;
+  }
+
+  .pricing-body {
+    padding: 36px 40px;
+  }
+
+  .pricing-includes {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .pricing-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+
+  .pricing-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.5;
+  }
+
+  .pricing-feature-dot {
+    width: 6px; height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+
+  .pricing-buildout {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+
+  .buildout-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .buildout-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .buildout-price {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--white);
+  }
+
+  .pricing-terms {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .pricing-term {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .pricing-term-dot {
+    width: 4px; height: 4px;
+    background: var(--red);
+    border-radius: 50%;
+  }
+
+  /* ===================== TRUST ===================== */
+  #trust {
+    background: var(--bg);
+  }
+
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .trust-card {
+    background: var(--white);
+    border-radius: 4px;
+    padding: 28px 24px;
+    box-shadow: var(--card-shadow);
+    text-align: center;
+  }
+
+  .trust-icon {
+    width: 48px; height: 48px;
+    background: rgba(200,16,46,0.08);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+  }
+
+  .trust-icon svg { width: 24px; height: 24px; }
+
+  .trust-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dark);
+    margin-bottom: 8px;
+  }
+
+  .trust-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  /* ===================== TIMELINE ===================== */
+  #timeline {
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .timeline-track {
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .timeline-track::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--red), rgba(200,16,46,0.1));
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 40px;
+  }
+
+  .timeline-item:last-child { margin-bottom: 0; }
+
+  .timeline-dot {
+    position: absolute;
+    left: -33px;
+    top: 6px;
+    width: 14px; height: 14px;
+    background: var(--red);
+    border-radius: 50%;
+    border: 3px solid var(--dark);
+  }
+
+  .timeline-week {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .timeline-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .timeline-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ===================== ROADMAP ===================== */
+  #roadmap {
+    background: var(--bg);
+  }
+
+  .roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .roadmap-card {
+    background: var(--white);
+    border-radius: 4px;
+    padding: 28px;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
+
+  .roadmap-card.active {
+    opacity: 1;
+    border: 1px solid var(--red);
+  }
+
+  .roadmap-card:hover { opacity: 1; }
+
+  .roadmap-phase {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .roadmap-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 12px;
+  }
+
+  .roadmap-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  /* ===================== CTA ===================== */
+  #cta {
+    background: var(--dark);
+    text-align: center;
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,16,46,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,16,46,0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .cta-content { position: relative; z-index: 2; }
+
+  .cta-headline {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+
+  .cta-sub {
+    font-size: 18px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.55);
+    max-width: 540px;
+    margin: 0 auto 48px;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 18px 40px;
+    border-radius: 2px;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .cta-btn:hover {
+    background: var(--red-dark);
+    transform: translateY(-2px);
+  }
+
+  .cta-contact {
+    margin-top: 32px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .cta-contact a {
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .cta-contact a:hover { color: var(--red); }
+
+  /* FOOTER */
+  footer {
+    background: #111;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 32px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.15em;
+  }
+
+  .footer-logo span { color: var(--red); }
+
+  .footer-note {
+    font-size: 12px;
+    color: rgba(255,255,255,0.2);
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.08em;
+    font-size: 9px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero-content { grid-template-columns: 1fr; }
+    .hero-side { flex-direction: row; flex-wrap: wrap; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .solution-grid { grid-template-columns: 1fr; }
+    .solution-card.featured { grid-column: span 1; }
+    .roi-grid { grid-template-columns: 1fr; }
+    .trust-grid { grid-template-columns: repeat(2, 1fr); }
+    .roadmap-grid { grid-template-columns: 1fr; }
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .container { padding: 0 20px; }
+    section { padding: 72px 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="red-bar"></div>
+
+<nav>
+  <div class="nav-logo">ARGO <span>IQ</span></div>
+  <ul class="nav-links">
+    <li><a href="#heard">What We Heard</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#cta">Get Started</a></li>
+  </ul>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<section id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-bg-glow"></div>
+  <div class="hero-diagonal"></div>
+
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-badge reveal">
+        <div class="hero-badge-dot"></div>
+        <span class="hero-badge-text">Prepared for Moummar, Co-Founder of DevSignal</span>
+      </div>
+
+      <h1 class="hero-headline reveal reveal-delay-1">
+        Your story is the<br><em>best sales asset</em><br>DevSignal has.
+      </h1>
+
+      <p class="hero-sub reveal reveal-delay-2">
+        You've built the systems, done the vetting, and scaled the results. Now it's time to let the world know. A content engine that turns your expertise into inbound pipeline, on LinkedIn and X, without you writing a single word from scratch.
+      </p>
+
+      <div class="hero-checks reveal reveal-delay-3">
+        <div class="hero-check">
+          <div class="check-icon">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          Consistent presence on LinkedIn and X, every week
+        </div>
+        <div class="hero-check">
+          <div class="check-icon">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          Thought leadership that drives inbound for DevSignal
+        </div>
+        <div class="hero-check">
+          <div class="check-icon">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          Your voice, your angles, reviewed before anything goes live
+        </div>
+      </div>
+
+      <div class="hero-stats reveal reveal-delay-4">
+        <div class="stat-item">
+          <span class="stat-val">Top 1%</span>
+          <span class="stat-label">Talent DevSignal places</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val">24hr</span>
+          <span class="stat-label">Avg. match time</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val">$80K</span>
+          <span class="stat-label">Annual savings per hire</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val">4+</span>
+          <span class="stat-label">Regions served</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-side reveal reveal-delay-2">
+      <div class="hero-name-card">
+        <span class="hero-name">Moummar Nawafleh</span>
+        <span class="hero-company">Co-Founder, DevSignal</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WHAT WE HEARD ===================== -->
+<section id="heard">
+  <div class="container">
+    <div class="reveal">
+      <span class="label">The opportunity</span>
+      <h2 class="section-title">The signal is there.<br>It's not being broadcast.</h2>
+      <p class="section-sub">DevSignal has the results, the process, and the track record. What's missing is a consistent voice amplifying all of it. Here's what we see:</p>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card reveal reveal-delay-1">
+        <span class="card-number">01</span>
+        <div class="card-title">A Founder Who's Done the Work</div>
+        <p class="card-text">You've scaled from zero to placing engineers across Fortune 500 companies and VC-backed startups in four regions. That journey, told well, is more compelling than any ad campaign.</p>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <span class="card-number">02</span>
+        <div class="card-title">Results Worth Talking About</div>
+        <p class="card-text">A 1% acceptance rate. 24-hour matching. $80K in annual savings per hire. A free trial with zero risk. These numbers deserve an audience far bigger than your current one.</p>
+      </div>
+      <div class="card reveal reveal-delay-3">
+        <span class="card-number">03</span>
+        <div class="card-title">Inbound That Isn't Happening Yet</div>
+        <p class="card-text">The startups and hiring managers who need DevSignal are on LinkedIn and X right now. They're just following someone else. A content engine changes that, bringing the right conversations to you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SOLUTION ===================== -->
+<section id="solution">
+  <div class="container">
+    <div class="reveal">
+      <span class="label" style="color:var(--red);">The build</span>
+      <h2 class="section-title light">Your AI Content Engine</h2>
+      <p class="section-sub light">We build and run the full pipeline. You stay in control of your voice. Every piece of content goes through you before it goes live.</p>
+    </div>
+
+    <!-- Pipeline Visual -->
+    <div class="pipeline reveal">
+      <div class="pipe-node">
+        <span class="pipe-label">Step 01</span>
+        <span class="pipe-val">Angle Discovery</span>
+      </div>
+      <div class="pipe-node">
+        <span class="pipe-label">Step 02</span>
+        <span class="pipe-val">Content Draft</span>
+      </div>
+      <div class="pipe-node">
+        <span class="pipe-label">Step 03</span>
+        <span class="pipe-val">Human Oversight</span>
+      </div>
+      <div class="pipe-node">
+        <span class="pipe-label">Step 04</span>
+        <span class="pipe-val">Your Review</span>
+      </div>
+      <div class="pipe-node">
+        <span class="pipe-label">Step 05</span>
+        <span class="pipe-val">Publish + Track</span>
+      </div>
+    </div>
+
+    <div class="solution-grid" style="margin-top:40px;">
+      <div class="solution-card featured reveal">
+        <div class="solution-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <div class="solution-card-title">LinkedIn Content Engine</div>
+        <p class="solution-card-text">A steady cadence of posts built around your expertise, your story, and DevSignal's results. We draft, you approve, an Argo operator handles final review, and it goes live on your schedule.</p>
+        <div class="solution-steps">
+          <div class="solution-step">
+            <span class="step-num">1</span>
+            <span class="step-text"><strong>Angle development:</strong> We identify the content pillars that position you as a thought leader in AI hiring, remote engineering, and startup talent ops.</span>
+          </div>
+          <div class="solution-step">
+            <span class="step-num">2</span>
+            <span class="step-text"><strong>Weekly drafts:</strong> 3 to 5 posts per week drafted in your voice, covering founder stories, hiring insights, DevSignal case studies, and industry takes.</span>
+          </div>
+          <div class="solution-step">
+            <span class="step-num">3</span>
+            <span class="step-text"><strong>Your approval gate:</strong> Nothing publishes without your sign-off. You stay in full control of what represents you.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="solution-card reveal reveal-delay-1">
+        <div class="solution-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+        </div>
+        <div class="solution-card-title">X / Twitter Presence</div>
+        <p class="solution-card-text">Shorter, higher-frequency content adapted for X. Hot takes on AI and hiring trends, thread-form breakdowns of your vetting process, and real-time commentary that builds following and credibility.</p>
+      </div>
+
+      <div class="solution-card reveal reveal-delay-2">
+        <div class="solution-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="solution-card-title">Monthly Strategy Review</div>
+        <p class="solution-card-text">Each month we review what's working, what's resonating, and where we shift. Topics, angles, and formats all evolve with your audience and what's moving in the market.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:32px; padding:24px; background:rgba(200,16,46,0.08); border:1px solid rgba(200,16,46,0.2); border-radius:4px;" class="reveal">
+      <p style="font-size:14px; color:rgba(255,255,255,0.55); line-height:1.7; text-align:center;">
+        <span style="font-family:'Orbitron',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--red); display:block; margin-bottom:8px;">Argo Operator Oversight</span>
+        Every piece of content is reviewed by a trained Argo operator for accuracy, tone, and brand alignment before it ever reaches your inbox for approval.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ROI ===================== -->
+<section id="roi">
+  <div class="container">
+    <div class="reveal">
+      <span class="label">The math</span>
+      <h2 class="section-title">What consistent visibility is worth</h2>
+      <p class="section-sub">We don't make revenue promises. What we will say is this: the companies doing this well are not the ones with the best product. They're the ones with the most visible founder.</p>
+    </div>
+
+    <div class="roi-grid reveal">
+      <div class="roi-card">
+        <span class="roi-number">1</span>
+        <span class="roi-label">Client match closes the investment</span>
+        <p class="roi-text">A single DevSignal placement generates enough to cover this engagement many times over. The content engine needs to work just once a month to justify itself. The compounding effect is what makes it a real asset.</p>
+      </div>
+      <div class="roi-card dark-card">
+        <span class="roi-number">10x</span>
+        <span class="roi-label">The compounding effect of consistency</span>
+        <p class="roi-text">Founders who post consistently for 90 days see compounding returns in reach and inbound. The audience you build in month three is worth more than month one because trust compounds on LinkedIn and X in a way no ad spend can replicate.</p>
+      </div>
+      <div class="roi-card" style="grid-column: span 2;">
+        <span class="roi-number" style="font-size:32px; line-height:1.3;">Your expertise, finally working for you around the clock</span>
+        <p class="roi-text">You built the system, vetted thousands of engineers, and created a product trusted by VC-backed startups and Fortune 500 companies. Right now that expertise lives mostly in your head and on your website. A content engine puts it in front of the people who need to hire in the next 90 days.</p>
+      </div>
+    </div>
+
+    <p class="roi-disclaimer reveal">These are directional frames, not guaranteed outcomes. Results depend on audience, consistency, and market conditions. We will work with you to set realistic expectations and measure what matters.</p>
+  </div>
+</section>
+
+<!-- ===================== PRICING ===================== -->
+<section id="pricing">
+  <div class="container">
+    <div class="reveal" style="text-align:center; margin-bottom:48px;">
+      <span class="label" style="color:var(--red); justify-content:center;">Investment</span>
+      <h2 class="section-title light">One plan. Everything included.</h2>
+      <p class="section-sub light" style="margin:0 auto;">No tiers, no upsells, no surprises. One flat monthly rate covers the full content engine for LinkedIn and X.</p>
+    </div>
+
+    <div class="pricing-card reveal">
+      <div class="pricing-header">
+        <div>
+          <span class="pricing-plan-name">Argo IQ Content Engine</span>
+          <div class="pricing-plan-title">Founder Presence Package</div>
+        </div>
+        <div class="pricing-price">
+          <span class="pricing-amount">$1,500</span>
+          <span class="pricing-period">per month</span>
+        </div>
+      </div>
+      <div class="pricing-body">
+        <span class="pricing-includes">What's included</span>
+        <ul class="pricing-features">
+          <li class="pricing-feature">
+            <div class="pricing-feature-dot"></div>
+            3 to 5 LinkedIn posts per week, drafted in your voice and approved by you before publishing
+          </li>
+          <li class="pricing-feature">
+            <div class="pricing-feature-dot"></div>
+            X / Twitter content adapted for high-frequency posting and audience growth
+          </li>
+          <li class="pricing-feature">
+            <div class="pricing-feature-dot"></div>
+            Full content calendar with topic angles mapped to DevSignal's ideal client profile
+          </li>
+          <li class="pricing-feature">
+            <div class="pricing-feature-dot"></div>
+            Argo operator oversight on every draft before it reaches you
+          </li>
+          <li class="pricing-feature">
+            <div class="pricing-feature-dot"></div>
+            Monthly strategy session to review performance and evolve the content direction
+          </li>
+          <li class="pricing-feature">
+            <div class="pricing-feature-dot"></div>
+            Thought leadership positioning around AI hiring, remote engineering, and startup talent ops
+          </li>
+        </ul>
+
+        <div class="pricing-buildout">
+          <div>
+            <span class="buildout-label">One-time buildout fee</span>
+            <span class="buildout-desc">Voice guide, content pillars, tone calibration, and platform setup</span>
+          </div>
+          <span class="buildout-price">$1,500</span>
+        </div>
+
+        <div class="pricing-terms">
+          <div class="pricing-term"><div class="pricing-term-dot"></div>Month-to-month</div>
+          <div class="pricing-term"><div class="pricing-term-dot"></div>No long-term contract</div>
+          <div class="pricing-term"><div class="pricing-term-dot"></div>Cancel anytime</div>
+          <div class="pricing-term"><div class="pricing-term-dot"></div>You own all content</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TRUST ===================== -->
+<section id="trust">
+  <div class="container">
+    <div class="reveal">
+      <span class="label">Why Argo IQ</span>
+      <h2 class="section-title">Built for founders who don't have time to guess</h2>
+      <p class="section-sub">Every engagement is structured for speed, accountability, and zero disruption to how you already work.</p>
+    </div>
+
+    <div class="trust-grid">
+      <div class="trust-card reveal reveal-delay-1">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="trust-title">Human Oversight</div>
+        <p class="trust-text">Every piece of content is reviewed by an Argo operator before it reaches you. Nothing automated goes directly to publish.</p>
+      </div>
+      <div class="trust-card reveal reveal-delay-2">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="trust-title">Your Approval Gate</div>
+        <p class="trust-text">You review and approve everything before it publishes. Your voice stays yours. Nothing goes live without your sign-off.</p>
+      </div>
+      <div class="trust-card reveal reveal-delay-3">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <div class="trust-title">No Contracts</div>
+        <p class="trust-text">Month-to-month, always. If it's not working, you leave. That's the deal. No lock-ins, no penalties.</p>
+      </div>
+      <div class="trust-card reveal reveal-delay-4">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <div class="trust-title">Built to Drive Inbound</div>
+        <p class="trust-text">Content is mapped to DevSignal's ideal client profile. Every post is designed to attract the founders and hiring managers who are your best customers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TIMELINE ===================== -->
+<section id="timeline">
+  <div class="container">
+    <div class="reveal">
+      <span class="label" style="color:var(--red);">Go-live plan</span>
+      <h2 class="section-title light">From kickoff to live content in four weeks</h2>
+      <p class="section-sub light">We move deliberately. Here's exactly what the first month looks like.</p>
+    </div>
+
+    <div class="timeline-track">
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <span class="timeline-week">Week 1</span>
+        <div class="timeline-title">Kickoff and Voice Calibration</div>
+        <p class="timeline-text">We run a 45-minute onboarding session with you to extract your angles, stories, opinions, and the DevSignal narrative. We build your voice guide and content pillars. You review and approve the direction before anything gets drafted.</p>
+      </div>
+      <div class="timeline-item reveal reveal-delay-1">
+        <div class="timeline-dot"></div>
+        <span class="timeline-week">Weeks 2 and 3</span>
+        <div class="timeline-title">First Draft Batch and Voice Lock</div>
+        <p class="timeline-text">First set of LinkedIn and X content lands in your inbox. You give feedback, we calibrate. This is where the voice locks in. Expect one or two rounds of revision as we dial in the tone and angles that feel authentically yours.</p>
+      </div>
+      <div class="timeline-item reveal reveal-delay-2">
+        <div class="timeline-dot"></div>
+        <span class="timeline-week">Week 4</span>
+        <div class="timeline-title">Full Cadence Live</div>
+        <p class="timeline-text">You're publishing consistently on LinkedIn and X. Argo operator runs oversight on every draft. You approve, we schedule. The engine is running.</p>
+      </div>
+      <div class="timeline-item reveal reveal-delay-3">
+        <div class="timeline-dot"></div>
+        <span class="timeline-week">Month 2 Onward</span>
+        <div class="timeline-title">Optimize and Expand</div>
+        <p class="timeline-text">We review month-one performance with you, identify what's resonating, and evolve the content mix. Topics, formats, and posting times all adapt as your audience grows.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ROADMAP ===================== -->
+<section id="roadmap">
+  <div class="container">
+    <div class="reveal">
+      <span class="label">Land and expand</span>
+      <h2 class="section-title">Where this goes</h2>
+      <p class="section-sub">We start with content. As the engine produces results, there are natural next moves if you want to go further. No pressure to expand until you see it working.</p>
+    </div>
+
+    <div class="roadmap-grid">
+      <div class="roadmap-card active reveal reveal-delay-1">
+        <span class="roadmap-phase">Phase 1 — Now</span>
+        <div class="roadmap-title">Founder Content Engine</div>
+        <p class="roadmap-text">LinkedIn and X content cadence. Thought leadership positioning. Inbound awareness for DevSignal. This is what we're proposing today.</p>
+      </div>
+      <div class="roadmap-card reveal reveal-delay-2">
+        <span class="roadmap-phase">Phase 2 — Optional</span>
+        <div class="roadmap-title">DevSignal Brand Content</div>
+        <p class="roadmap-text">Extend the content engine to the DevSignal company page. Case study promotion, developer spotlights, and hiring insights that drive traffic to the platform.</p>
+      </div>
+      <div class="roadmap-card reveal reveal-delay-3">
+        <span class="roadmap-phase">Phase 3 — Optional</span>
+        <div class="roadmap-title">Outreach Automation</div>
+        <p class="roadmap-text">Use your growing audience as a signal layer. Automate warm outreach to engaged followers who fit the DevSignal client profile. Content-led, not cold.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section id="cta">
+  <div class="container cta-content">
+    <div class="reveal">
+      <span class="label" style="color:var(--red); justify-content:center; margin-bottom:24px;">Ready to start</span>
+      <h2 class="cta-headline">Let's put DevSignal's<br>story to work.</h2>
+      <p class="cta-sub">You've built something real. The engineers, the process, the results. Now it's time for the right people to hear about it. Let's build the engine.</p>
+      <a href="mailto:hello@argoiq.com" class="cta-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Let's Get Started
+      </a>
+      <p class="cta-contact">Or reach out directly at <a href="mailto:hello@argoiq.com">hello@argoiq.com</a></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">ARGO <span>IQ</span></div>
+  <div class="footer-note">Confidential proposal — prepared for Moummar Nawafleh, DevSignal</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Fire hero elements immediately
+  document.querySelectorAll('#hero .reveal').forEach(el => {
+    setTimeout(() => el.classList.add('visible'), 100);
+  });
+</script>
+</body>
+</html>
